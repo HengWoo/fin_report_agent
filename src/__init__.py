@@ -1,0 +1,1 @@
+"""Financial Reporting Agent - Core Package"""
