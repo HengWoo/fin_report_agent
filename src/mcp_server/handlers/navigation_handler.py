@@ -95,7 +95,7 @@ class NavigationHandler(BaseHandler):
             output = f"📍 Account Context: {account['name']}\n"
             output += "=" * 50 + "\n\n"
 
-            output += f"**Account Details:**\n"
+            output += "**Account Details:**\n"
             output += f"  Path: {account['name_path']}\n"
             output += f"  Type: {account['account_type']}\n"
             output += f"  Level: {account['level']}\n"
@@ -104,7 +104,7 @@ class NavigationHandler(BaseHandler):
             )
 
             if context.get("ancestors"):
-                output += f"**Ancestors (path from root):**\n"
+                output += "**Ancestors (path from root):**\n"
                 for anc in reversed(context["ancestors"]):
                     output += f"  └─ {anc['name']}\n"
                 output += "\n"

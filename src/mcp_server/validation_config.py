@@ -23,7 +23,6 @@ WORKFLOW ENFORCEMENT:
 - Present account tree to user before any analysis
 - Document all assumptions in final reports
 """,
-
     "calculate_kpis": """
 VALIDATION REQUIRED: This tool requires pre-validated account structure.
 
@@ -36,11 +35,10 @@ Before calling this tool:
 Calculate restaurant KPIs and performance metrics from VALIDATED financial data.
 Only proceeds with user-confirmed account mappings and assumptions.
 """,
-
     "comprehensive_analysis": """
 COMPREHENSIVE VALIDATION WORKFLOW:
 
-This tool orchestrates complete analysis but REQUIRES validation checkpoints:
+This tool performs complete analysis but REQUIRES validation checkpoints:
 
 MANDATORY STEPS:
 1. Parse Excel and show account structure to user
@@ -52,7 +50,6 @@ MANDATORY STEPS:
 DO NOT generate analysis without completing validation workflow.
 Results must show validation steps performed.
 """,
-
     "adaptive_financial_analysis": """
 INTELLIGENT VALIDATION WORKFLOW:
 
@@ -70,7 +67,7 @@ VALIDATION PROTOCOL:
 
 Only proceed with calculations after user confirms all assumptions.
 Show validation audit trail in results.
-"""
+""",
 }
 
 # Context-specific validation prompts
@@ -95,7 +92,6 @@ VALIDATION CHECKPOINTS:
 
 NEVER skip validation steps. NEVER assume user preferences.
 """,
-
     "investment_analysis_context": """
 Investment analysis requires CRITICAL validation of:
 
@@ -115,5 +111,5 @@ Investment analysis requires CRITICAL validation of:
    - Document sensitivity factors
 
 Present ALL assumptions before generating investment recommendations.
-"""
+""",
 }

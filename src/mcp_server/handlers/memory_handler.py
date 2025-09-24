@@ -30,7 +30,7 @@ class MemoryHandler(BaseHandler):
             )
 
             if success:
-                output = f"💾 Insight Saved Successfully\n"
+                output = "💾 Insight Saved Successfully\n"
                 output += "=" * 50 + "\n\n"
                 output += f"**Key:** {key}\n"
                 output += f"**Type:** {insight_type}\n"
@@ -56,14 +56,14 @@ class MemoryHandler(BaseHandler):
             if "error" in context:
                 return self.format_error(context["error"], "get_session_context")
 
-            output = f"📋 Session Context Summary\n"
+            output = "📋 Session Context Summary\n"
             output += "=" * 50 + "\n\n"
             output += f"**Session ID:** {context['session_id']}\n"
             output += f"**File:** {context['file_path']}\n"
             output += f"**Created:** {context['created_at']}\n"
             output += f"**Last Accessed:** {context['last_accessed']}\n\n"
 
-            output += f"**Statistics:**\n"
+            output += "**Statistics:**\n"
             output += f"  • Insights: {context['insights_count']}\n"
             output += f"  • Patterns: {context['patterns_count']}\n"
             output += f"  • History Events: {context['history_count']}\n"
@@ -97,12 +97,12 @@ class MemoryHandler(BaseHandler):
             )
 
             if success:
-                output = f"📝 Memory Note Saved\n"
+                output = "📝 Memory Note Saved\n"
                 output += "=" * 50 + "\n\n"
                 output += f"**Name:** {name}.md\n"
                 if session_id:
                     output += f"**Session:** {session_id}\n"
-                output += f"\n**Content Preview:**\n"
+                output += "\n**Content Preview:**\n"
                 output += content[:200] + ("..." if len(content) > 200 else "")
             else:
                 output = "❌ Failed to save memory note"

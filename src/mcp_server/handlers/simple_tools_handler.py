@@ -31,7 +31,7 @@ class SimpleToolsHandler(BaseHandler):
             result = read_excel_region(
                 file_path, start_row, end_row, start_col, end_col
             )
-            output = f"📊 Excel Region Data\n"
+            output = "📊 Excel Region Data\n"
             output += f"Rows {start_row}-{end_row}, Columns {start_col}-{end_col}\n"
             output += "-" * 40 + "\n"
             for i, row in enumerate(result, start=start_row):
@@ -65,7 +65,7 @@ class SimpleToolsHandler(BaseHandler):
 
         try:
             info = get_excel_info(file_path)
-            output = f"📄 Excel File Information\n"
+            output = "📄 Excel File Information\n"
             output += "-" * 40 + "\n"
             output += f"File: {info['file_path']}\n"
             output += f"Rows: {info['rows']}\n"
@@ -83,7 +83,7 @@ class SimpleToolsHandler(BaseHandler):
 
         try:
             result = calculate(operation, values)
-            output = f"🧮 Calculation Result\n"
+            output = "🧮 Calculation Result\n"
             output += "-" * 40 + "\n"
             output += f"Operation: {operation}\n"
             output += f"Values: {values}\n"

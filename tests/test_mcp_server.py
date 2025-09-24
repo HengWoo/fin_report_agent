@@ -27,7 +27,7 @@ class TestMCPServerConfig:
         """Test default configuration values."""
         config = MCPServerConfig()
 
-        assert config.server_name == "restaurant-financial-analysis"
+        assert config.server_name == "fin-report-agent"
         assert config.server_version == "1.0.0"
         assert config.host == "localhost"
         assert config.port == 8000
@@ -68,8 +68,9 @@ class TestRestaurantFinancialMCPServer:
         """Test server initialization."""
         assert server.config.server_name == "test-server"
         assert server.analytics_engine is not None
-        assert server.parser is not None
+        assert server.hierarchy_parser is not None
         assert server.validator is not None
+        assert server.adaptive_analyzer is not None
 
     @pytest.mark.asyncio
     async def test_list_tools(self, server):
@@ -77,17 +78,36 @@ class TestRestaurantFinancialMCPServer:
         tools = await server.server.list_tools()
 
         tool_names = [tool.name for tool in tools]
+
+        # Check that we have all key tool categories
         expected_tools = [
+            # Legacy tools
             "parse_excel",
             "validate_financial_data",
             "calculate_kpis",
             "analyze_trends",
             "generate_insights",
-            "comprehensive_analysis"
+            "comprehensive_analysis",
+            # Simple tools
+            "read_excel_region",
+            "search_in_excel",
+            "get_excel_info",
+            # Navigation tools
+            "find_account",
+            "get_financial_overview",
+            # Memory tools
+            "save_analysis_insight",
+            # Thinking tools
+            "think_about_data",
+            # Validation tools
+            "validate_account_structure"
         ]
 
         for expected_tool in expected_tools:
-            assert expected_tool in tool_names
+            assert expected_tool in tool_names, f"Missing tool: {expected_tool}"
+
+        # Verify we have the expected number of tools (22 total)
+        assert len(tools) == 22
 
     @pytest.mark.asyncio
     async def test_list_resources(self, server):

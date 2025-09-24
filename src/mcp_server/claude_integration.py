@@ -5,12 +5,9 @@ This module provides integration between the Restaurant Financial Analysis
 MCP Server and Claude Code, enabling seamless AI-powered financial analysis.
 """
 
-import asyncio
 import logging
-from typing import Dict, Any, List, Optional, Callable
-import json
+from typing import Dict, Any, List, Optional
 from datetime import datetime
-from pathlib import Path
 
 from .config import MCPServerConfig
 from .server import RestaurantFinancialMCPServer
@@ -58,13 +55,13 @@ class ClaudeCodeIntegration:
             "capabilities": {
                 "tools": await self._get_tool_capabilities(),
                 "resources": await self._get_resource_capabilities(),
-                "prompts": await self._get_prompt_capabilities()
+                "prompts": await self._get_prompt_capabilities(),
             },
             "metadata": {
                 "language_support": ["en", "zh"],
                 "file_types": self.config.allowed_file_extensions,
-                "max_file_size_mb": self.config.max_file_size_mb
-            }
+                "max_file_size_mb": self.config.max_file_size_mb,
+            },
         }
 
         self.logger.info(f"Registering with Claude Code: {registration_data}")
@@ -82,7 +79,7 @@ class ClaudeCodeIntegration:
                 "description": tool.description,
                 "category": self._categorize_tool(tool.name),
                 "complexity": self._assess_tool_complexity(tool.name),
-                "estimated_duration": self._estimate_tool_duration(tool.name)
+                "estimated_duration": self._estimate_tool_duration(tool.name),
             }
             for tool in tools
         ]
@@ -95,7 +92,7 @@ class ClaudeCodeIntegration:
                 "uri": str(resource.uri),
                 "name": resource.name,
                 "description": resource.description,
-                "mime_type": resource.mimeType
+                "mime_type": resource.mimeType,
             }
             for resource in resources
         ]
@@ -107,20 +104,20 @@ class ClaudeCodeIntegration:
                 "name": "restaurant_analysis_prompt",
                 "description": "Generate comprehensive restaurant financial analysis reports",
                 "languages": ["en", "zh"],
-                "output_formats": ["text", "json", "markdown"]
+                "output_formats": ["text", "json", "markdown"],
             },
             {
                 "name": "kpi_explanation_prompt",
                 "description": "Explain restaurant KPIs and their business implications",
                 "languages": ["en", "zh"],
-                "output_formats": ["text", "markdown"]
+                "output_formats": ["text", "markdown"],
             },
             {
                 "name": "trend_analysis_prompt",
                 "description": "Analyze and explain financial trends over time",
                 "languages": ["en", "zh"],
-                "output_formats": ["text", "markdown"]
-            }
+                "output_formats": ["text", "markdown"],
+            },
         ]
 
     def _categorize_tool(self, tool_name: str) -> str:
@@ -131,7 +128,7 @@ class ClaudeCodeIntegration:
             "calculate_kpis": "analysis",
             "analyze_trends": "analysis",
             "generate_insights": "ai_generation",
-            "comprehensive_analysis": "end_to_end"
+            "comprehensive_analysis": "end_to_end",
         }
         return categories.get(tool_name, "general")
 
@@ -143,7 +140,7 @@ class ClaudeCodeIntegration:
             "calculate_kpis": "medium",
             "analyze_trends": "high",
             "generate_insights": "high",
-            "comprehensive_analysis": "very_high"
+            "comprehensive_analysis": "very_high",
         }
         return complexity_map.get(tool_name, "medium")
 
@@ -155,13 +152,15 @@ class ClaudeCodeIntegration:
             "calculate_kpis": 20,
             "analyze_trends": 45,
             "generate_insights": 60,
-            "comprehensive_analysis": 120
+            "comprehensive_analysis": 120,
         }
         return duration_map.get(tool_name, 30)
 
     async def handle_claude_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Handle a request from Claude Code."""
-        self.logger.info(f"Handling Claude Code request: {request.get('type', 'unknown')}")
+        self.logger.info(
+            f"Handling Claude Code request: {request.get('type', 'unknown')}"
+        )
 
         try:
             request_type = request.get("type")
@@ -177,11 +176,7 @@ class ClaudeCodeIntegration:
 
         except Exception as e:
             self.logger.error(f"Error handling Claude request: {str(e)}")
-            return {
-                "success": False,
-                "error": str(e),
-                "error_type": type(e).__name__
-            }
+            return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
     async def _handle_tool_call(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Handle a tool call from Claude Code."""
@@ -195,7 +190,7 @@ class ClaudeCodeIntegration:
             "success": True,
             "tool_name": tool_name,
             "results": results,
-            "execution_time": datetime.now().isoformat()
+            "execution_time": datetime.now().isoformat(),
         }
 
     async def _handle_resource_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -208,7 +203,7 @@ class ClaudeCodeIntegration:
             "success": True,
             "resource_uri": resource_uri,
             "content": "Resource content would be here",
-            "mime_type": "text/plain"
+            "mime_type": "text/plain",
         }
 
     async def _handle_prompt_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -223,10 +218,12 @@ class ClaudeCodeIntegration:
             "success": True,
             "prompt_name": prompt_name,
             "response": response,
-            "language": arguments.get("language", "en")
+            "language": arguments.get("language", "en"),
         }
 
-    async def _generate_prompt_response(self, prompt_name: str, arguments: Dict[str, Any]) -> str:
+    async def _generate_prompt_response(
+        self, prompt_name: str, arguments: Dict[str, Any]
+    ) -> str:
         """Generate response for a specific prompt."""
         if prompt_name == "restaurant_analysis_prompt":
             return await self._generate_analysis_prompt_response(arguments)
@@ -237,7 +234,9 @@ class ClaudeCodeIntegration:
         else:
             return f"Unknown prompt: {prompt_name}"
 
-    async def _generate_analysis_prompt_response(self, arguments: Dict[str, Any]) -> str:
+    async def _generate_analysis_prompt_response(
+        self, arguments: Dict[str, Any]
+    ) -> str:
         """Generate comprehensive analysis prompt response."""
         language = arguments.get("language", "en")
 
@@ -284,7 +283,9 @@ Based on the provided financial data, I will generate a comprehensive restaurant
 Please provide your financial data and I will begin the analysis immediately.
             """
 
-    async def _generate_kpi_explanation_response(self, arguments: Dict[str, Any]) -> str:
+    async def _generate_kpi_explanation_response(
+        self, arguments: Dict[str, Any]
+    ) -> str:
         """Generate KPI explanation response."""
         language = arguments.get("language", "en")
 
@@ -331,7 +332,9 @@ Please provide your financial data and I will begin the analysis immediately.
 Specific meanings and improvement methods for each indicator will be detailed in the analysis.
             """
 
-    async def _generate_trend_explanation_response(self, arguments: Dict[str, Any]) -> str:
+    async def _generate_trend_explanation_response(
+        self, arguments: Dict[str, Any]
+    ) -> str:
         """Generate trend analysis explanation response."""
         language = arguments.get("language", "en")
 
@@ -385,33 +388,37 @@ Trend analysis helps identify business direction and potential risks.
             """
 
     async def generate_bilingual_report(
-        self,
-        analysis_data: Dict[str, Any],
-        report_type: str = "comprehensive"
+        self, analysis_data: Dict[str, Any], report_type: str = "comprehensive"
     ) -> Dict[str, str]:
         """Generate bilingual analysis report."""
         self.logger.info(f"Generating bilingual report: {report_type}")
 
         try:
             # Generate English version
-            english_report = await self._generate_english_report(analysis_data, report_type)
+            english_report = await self._generate_english_report(
+                analysis_data, report_type
+            )
 
             # Generate Chinese version
-            chinese_report = await self._generate_chinese_report(analysis_data, report_type)
+            chinese_report = await self._generate_chinese_report(
+                analysis_data, report_type
+            )
 
             return {
                 "english": english_report,
                 "chinese": chinese_report,
                 "bilingual": True,
                 "report_type": report_type,
-                "generated_at": datetime.now().isoformat()
+                "generated_at": datetime.now().isoformat(),
             }
 
         except Exception as e:
             self.logger.error(f"Failed to generate bilingual report: {str(e)}")
             raise
 
-    async def _generate_english_report(self, analysis_data: Dict[str, Any], report_type: str) -> str:
+    async def _generate_english_report(
+        self, analysis_data: Dict[str, Any], report_type: str
+    ) -> str:
         """Generate English version of the report."""
         # This would contain sophisticated report generation logic
         return f"""
@@ -437,7 +444,9 @@ This comprehensive analysis reveals key insights into restaurant performance...
 Generated by Restaurant Financial Analysis MCP Server v{self.config.server_version}
         """
 
-    async def _generate_chinese_report(self, analysis_data: Dict[str, Any], report_type: str) -> str:
+    async def _generate_chinese_report(
+        self, analysis_data: Dict[str, Any], report_type: str
+    ) -> str:
         """Generate Chinese version of the report."""
         return f"""
 # 餐厅财务分析报告

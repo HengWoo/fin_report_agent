@@ -10,10 +10,6 @@ from .server import RestaurantFinancialMCPServer
 from .tools import FinancialAnalysisTools
 from .config import MCPServerConfig
 
-__all__ = [
-    "RestaurantFinancialMCPServer",
-    "FinancialAnalysisTools",
-    "MCPServerConfig"
-]
+__all__ = ["RestaurantFinancialMCPServer", "FinancialAnalysisTools", "MCPServerConfig"]
 
 __version__ = "1.0.0"

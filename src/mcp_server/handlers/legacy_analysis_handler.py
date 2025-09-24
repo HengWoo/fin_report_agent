@@ -22,7 +22,6 @@ class LegacyAnalysisHandler(BaseHandler):
         to prevent double counting and exclude non-financial columns.
         """
         file_path = arguments.get("file_path")
-        sheet_name = arguments.get("sheet_name")
 
         if not file_path:
             return self.format_error("file_path is required", "parse_excel")

@@ -278,7 +278,10 @@ class ToolRegistry:
                             "type": "string",
                             "description": "Current session ID",
                         },
-                        "key": {"type": "string", "description": "Insight key/identifier"},
+                        "key": {
+                            "type": "string",
+                            "description": "Insight key/identifier",
+                        },
                         "description": {
                             "type": "string",
                             "description": "Insight description",
@@ -441,7 +444,7 @@ class ToolRegistry:
         return [
             Tool(
                 name="comprehensive_analysis",
-                description="Perform comprehensive financial analysis using Claude Orchestrator. Includes parsing, validation, KPI calculation, trends, and insights in one workflow.",
+                description="Perform comprehensive financial analysis using Serena-like components. Includes parsing, validation, KPI calculation, trends, and insights in one workflow.",
                 inputSchema={
                     "type": "object",
                     "properties": {
@@ -473,7 +476,12 @@ class ToolRegistry:
                         },
                         "analysis_focus": {
                             "type": "string",
-                            "enum": ["profitability", "growth", "efficiency", "comprehensive"],
+                            "enum": [
+                                "profitability",
+                                "growth",
+                                "efficiency",
+                                "comprehensive",
+                            ],
                             "description": "Focus area: 'profitability', 'growth', 'efficiency', or 'comprehensive' (default: comprehensive)",
                         },
                         "business_context": {

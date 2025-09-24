@@ -15,6 +15,9 @@ from .config import MCPServerConfig
 from .handler_router import HandlerRouter
 from .tool_registry import ToolRegistry
 from .validation_state import validation_state_manager
+from .financial_memory import financial_memory_manager
+from .financial_navigator import financial_navigator
+from .thinking_tools import thinking_tools
 from ..analyzers.restaurant_analytics import RestaurantAnalyticsEngine
 from ..analyzers.adaptive_financial_analyzer import AdaptiveFinancialAnalyzer
 from ..parsers.account_hierarchy_parser import AccountHierarchyParser
@@ -44,6 +47,9 @@ class RestaurantFinancialMCPServer:
             "hierarchy_parser": self.hierarchy_parser,
             "validator": self.validator,
             "validation_state_manager": validation_state_manager,
+            "financial_memory_manager": financial_memory_manager,
+            "financial_navigator": financial_navigator,
+            "thinking_tools": thinking_tools,
         }
 
         self.router = HandlerRouter(server_context)

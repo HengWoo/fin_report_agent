@@ -25,7 +25,7 @@ class ThinkingHandler(BaseHandler):
                 collected_data, analysis_goal
             )
 
-            output = f"🤔 Reflection: Financial Data Assessment\n"
+            output = "🤔 Reflection: Financial Data Assessment\n"
             output += "=" * 50 + "\n\n"
             output += f"**Summary:** {result.summary}\n"
             output += f"**Confidence:** {result.confidence * 100:.0f}%\n\n"
@@ -53,7 +53,7 @@ class ThinkingHandler(BaseHandler):
                 analysis_performed, required_components
             )
 
-            output = f"✅ Analysis Completeness Check\n"
+            output = "✅ Analysis Completeness Check\n"
             output += "=" * 50 + "\n\n"
             output += f"**Summary:** {result.summary}\n"
             output += f"**Completion Rate:** {result.confidence * 100:.0f}%\n\n"
@@ -62,17 +62,17 @@ class ThinkingHandler(BaseHandler):
             output += f"**Completed:** {details['completed_count']}/{details['total_required']}\n"
 
             if details.get("completed"):
-                output += f"\n**✅ Completed Components:**\n"
+                output += "\n**✅ Completed Components:**\n"
                 for comp in details["completed"]:
                     output += f"  ✓ {comp}\n"
 
             if details.get("missing"):
-                output += f"\n**❌ Missing Components:**\n"
+                output += "\n**❌ Missing Components:**\n"
                 for comp in details["missing"]:
                     output += f"  ✗ {comp}\n"
 
             if result.recommendations:
-                output += f"\n**Next Steps:**\n"
+                output += "\n**Next Steps:**\n"
                 for rec in result.recommendations:
                     output += f"  {rec}\n"
 
@@ -92,7 +92,7 @@ class ThinkingHandler(BaseHandler):
                 assumptions, financial_context
             )
 
-            output = f"🔍 Assumption Validation\n"
+            output = "🔍 Assumption Validation\n"
             output += "=" * 50 + "\n\n"
             output += f"**Summary:** {result.summary}\n"
             output += f"**Validation Score:** {result.confidence * 100:.0f}%\n\n"
@@ -105,7 +105,7 @@ class ThinkingHandler(BaseHandler):
                     output += f"  {icon} {val.get('reason', 'N/A')}\n"
 
             if result.recommendations:
-                output += f"\n**Recommendations:**\n"
+                output += "\n**Recommendations:**\n"
                 for rec in result.recommendations:
                     output += f"  {rec}\n"
 
