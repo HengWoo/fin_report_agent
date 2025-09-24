@@ -14,7 +14,7 @@ class MCPServerConfig(BaseModel):
     """Configuration for the MCP Server."""
 
     # Server settings
-    server_name: str = "restaurant-financial-analysis"
+    server_name: str = "fin-report-agent"
     server_version: str = "1.0.0"
     description: str = "MCP Server for Restaurant Financial Analysis"
 

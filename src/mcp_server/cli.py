@@ -46,7 +46,8 @@ def start_server(transport: str, port: int, host: str):
 
 
 @main.command()
-def setup_claude():
+@click.option('--auto', is_flag=True, help='Automatically write config (recommended)')
+def setup_claude(auto: bool):
     """Automatically configure Claude Desktop to use this MCP server"""
 
     click.echo("🔧 Setting up Claude Desktop configuration...")
@@ -58,21 +59,67 @@ def setup_claude():
         Path.home() / ".config" / "claude" / "mcp.json",
     ]
 
+    mcp_config = {
+        "type": "stdio",
+        "command": "restaurant-mcp",
+        "args": ["start-server", "--transport", "stdio"]
+    }
+
+    # Try to auto-configure if --auto flag or if we can find existing config
+    config_path = None
+    for path in possible_config_paths:
+        if path.exists():
+            config_path = path
+            break
+
+    # If no config exists, create in default location
+    if not config_path and auto:
+        config_path = Path.home() / ".claude" / "mcp.json"
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if auto or config_path:
+        try:
+            # Load existing config or create new
+            if config_path and config_path.exists():
+                with open(config_path) as f:
+                    config = json.load(f)
+                    if "mcpServers" not in config:
+                        config["mcpServers"] = {}
+            else:
+                config = {"mcpServers": {}}
+
+            # Add our server
+            config["mcpServers"]["fin-report-agent"] = mcp_config
+
+            # Write config
+            if config_path:
+                with open(config_path, 'w') as f:
+                    json.dump(config, f, indent=2)
+
+                click.echo(f"✅ Successfully configured Claude Desktop!")
+                click.echo(f"   Config file: {config_path}")
+                click.echo(f"   MCP server: fin-report-agent")
+                click.echo("\n🔄 Please restart Claude Desktop to activate the MCP server")
+                return
+        except Exception as e:
+            click.echo(f"⚠️  Auto-configuration failed: {e}")
+            click.echo("📋 Falling back to manual instructions...\n")
+
+    # Manual instructions
     config_content = {
         "mcpServers": {
-            "restaurant-financial-analysis": {
-                "type": "stdio",
-                "command": "restaurant-mcp",
-                "args": ["start-server", "--transport", "stdio"]
-            }
+            "fin-report-agent": mcp_config
         }
     }
 
     click.echo("\n📋 Add this to your Claude Desktop MCP configuration:")
     click.echo(json.dumps(config_content, indent=2))
-    click.echo("\n💡 Tip: Place this in one of these locations:")
+    click.echo("\n💡 Config file locations (choose one):")
     for path in possible_config_paths:
-        click.echo(f"   - {path}")
+        exists = "✓ exists" if path.exists() else ""
+        click.echo(f"   - {path} {exists}")
+    click.echo("\n💡 Tip: Run with --auto flag to configure automatically:")
+    click.echo("   restaurant-mcp setup-claude --auto")
     click.echo("\n✅ After adding, restart Claude Desktop to activate the MCP server")
 
 
@@ -123,7 +170,7 @@ async def run_stdio():
 
     # Create configuration
     config = MCPServerConfig(
-        server_name="restaurant-financial-analysis",
+        server_name="fin-report-agent",
         server_version="1.0.0",
         enable_bilingual_output=True,
         log_level="INFO"

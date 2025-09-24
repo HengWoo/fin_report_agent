@@ -23,7 +23,7 @@ async def main():
 
     # Create configuration
     config = MCPServerConfig(
-        server_name="restaurant-financial-analysis",
+        server_name="fin-report-agent",
         server_version="1.0.0",
         enable_bilingual_output=True,
         log_level="INFO"  # Server will log to file only

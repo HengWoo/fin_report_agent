@@ -36,12 +36,18 @@ restaurant-mcp setup-claude
 # Follow the instructions to add configuration to Claude Desktop
 ```
 
-**Option 2: Manual setup**
+**Option 2: Auto-setup with flag (fully automatic)**
+```bash
+restaurant-mcp setup-claude --auto
+# Automatically writes config to Claude Desktop!
+```
+
+**Option 3: Manual setup**
 Add to your Claude Desktop MCP configuration:
 ```json
 {
   "mcpServers": {
-    "restaurant-financial-analysis": {
+    "fin-report-agent": {
       "type": "stdio",
       "command": "restaurant-mcp",
       "args": ["start-server", "--transport", "stdio"]
