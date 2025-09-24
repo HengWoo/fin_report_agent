@@ -1,5 +1,5 @@
 [project]
-name = "restaurant-financial-mcp"
+name = "fin-report-agent"
 version = "0.1.0"
 description = "MCP Server for Chinese Restaurant Financial Analysis - Powered by Claude Intelligence"
 readme = "README.md"
@@ -42,10 +42,10 @@ Repository = "https://github.com/HengWoo/fin_report_agent"
 Issues = "https://github.com/HengWoo/fin_report_agent/issues"
 
 [project.scripts]
-restaurant-mcp = "src.mcp_server.cli:main"
-restaurant-mcp-server = "src.mcp_server.cli:start_server"
-restaurant-mcp-setup = "src.mcp_server.cli:setup_claude"
-restaurant-mcp-test = "src.mcp_server.cli:test"
+fin-report-agent = "src.mcp_server.cli:main"
+fin-report-agent-server = "src.mcp_server.cli:start_server"
+fin-report-agent-setup = "src.mcp_server.cli:setup_claude"
+fin-report-agent-test = "src.mcp_server.cli:test"
 
 [dependency-groups]
 dev = [

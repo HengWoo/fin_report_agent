@@ -211,6 +211,61 @@ wheels = [
 ]
 
 [[package]]
+name = "fin-report-agent"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "asyncio-mqtt" },
+    { name = "click" },
+    { name = "fastapi" },
+    { name = "httpx" },
+    { name = "jinja2" },
+    { name = "mcp" },
+    { name = "openpyxl" },
+    { name = "pandas" },
+    { name = "pydantic" },
+    { name = "python-dotenv" },
+    { name = "pyyaml" },
+    { name = "typing-extensions" },
+    { name = "uvicorn" },
+    { name = "watchdog" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "black" },
+    { name = "pytest" },
+    { name = "pytest-cov" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "asyncio-mqtt", specifier = ">=0.11.0" },
+    { name = "click", specifier = ">=8.0.0" },
+    { name = "fastapi", specifier = ">=0.104.0" },
+    { name = "httpx", specifier = ">=0.25.0" },
+    { name = "jinja2", specifier = ">=3.1.0" },
+    { name = "mcp", specifier = ">=1.1.0" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=2.3.2" },
+    { name = "pydantic", specifier = ">=2.11.9" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "typing-extensions", specifier = ">=4.15.0" },
+    { name = "uvicorn", specifier = ">=0.24.0" },
+    { name = "watchdog", specifier = ">=3.0.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "black", specifier = ">=25.1.0" },
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "ruff", specifier = ">=0.13.0" },
+]
+
+[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -809,61 +864,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/2f/db/98b5c277be99dd18bfd91dd04e1b759cad18d1a338188c936e92f921c7e2/referencing-0.36.2.tar.gz", hash = "sha256:df2e89862cd09deabbdba16944cc3f10feb6b3e6f18e902f7cc25609a34775aa", size = 74744 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c1/b1/3baf80dc6d2b7bc27a95a67752d0208e410351e3feb4eb78de5f77454d8d/referencing-0.36.2-py3-none-any.whl", hash = "sha256:e8699adbbf8b5c7de96d8ffa0eb5c158b3beafce084968e2ea8bb08c6794dcd0", size = 26775 },
-]
-
-[[package]]
-name = "restaurant-financial-mcp"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "asyncio-mqtt" },
-    { name = "click" },
-    { name = "fastapi" },
-    { name = "httpx" },
-    { name = "jinja2" },
-    { name = "mcp" },
-    { name = "openpyxl" },
-    { name = "pandas" },
-    { name = "pydantic" },
-    { name = "python-dotenv" },
-    { name = "pyyaml" },
-    { name = "typing-extensions" },
-    { name = "uvicorn" },
-    { name = "watchdog" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "black" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "asyncio-mqtt", specifier = ">=0.11.0" },
-    { name = "click", specifier = ">=8.0.0" },
-    { name = "fastapi", specifier = ">=0.104.0" },
-    { name = "httpx", specifier = ">=0.25.0" },
-    { name = "jinja2", specifier = ">=3.1.0" },
-    { name = "mcp", specifier = ">=1.1.0" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pandas", specifier = ">=2.3.2" },
-    { name = "pydantic", specifier = ">=2.11.9" },
-    { name = "python-dotenv", specifier = ">=1.1.1" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "typing-extensions", specifier = ">=4.15.0" },
-    { name = "uvicorn", specifier = ">=0.24.0" },
-    { name = "watchdog", specifier = ">=3.0.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "black", specifier = ">=25.1.0" },
-    { name = "pytest", specifier = ">=8.4.2" },
-    { name = "pytest-cov", specifier = ">=7.0.0" },
-    { name = "ruff", specifier = ">=0.13.0" },
 ]
 
 [[package]]

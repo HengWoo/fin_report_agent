@@ -25,10 +25,10 @@ uv tool install git+https://github.com/HengWoo/fin_report_agent
 ### 1. CLI Entry Points (pyproject.toml)
 ```toml
 [project.scripts]
-restaurant-mcp = "src.mcp_server.cli:main"
-restaurant-mcp-server = "src.mcp_server.cli:start_server"
-restaurant-mcp-setup = "src.mcp_server.cli:setup_claude"
-restaurant-mcp-test = "src.mcp_server.cli:test"
+fin-report-agent = "src.mcp_server.cli:main"
+fin-report-agent-server = "src.mcp_server.cli:start_server"
+fin-report-agent-setup = "src.mcp_server.cli:setup_claude"
+fin-report-agent-test = "src.mcp_server.cli:test"
 ```
 
 ### 2. CLI Module (src/mcp_server/cli.py)
@@ -41,7 +41,7 @@ def start_server(transport, port, host):
 ```
 
 ### 3. Project Configuration
-- ✅ Package name: `restaurant-financial-mcp`
+- ✅ Package name: `fin-report-agent`
 - ✅ Build system: Hatchling
 - ✅ Python 3.11+ support
 - ✅ Proper .gitignore (archives excluded)
@@ -72,7 +72,7 @@ pip install git+https://github.com/HengWoo/fin_report_agent
 ### Step 2: Verify Installation
 
 ```bash
-restaurant-mcp test
+fin-report-agent test
 ```
 
 Output:
@@ -89,7 +89,7 @@ Output:
 
 **Auto-setup:**
 ```bash
-restaurant-mcp setup-claude
+fin-report-agent setup-claude
 ```
 
 This will show you the configuration to add to Claude Desktop.
@@ -101,7 +101,7 @@ Add to Claude Desktop MCP config:
   "mcpServers": {
     "restaurant-financial-analysis": {
       "type": "stdio",
-      "command": "restaurant-mcp",
+      "command": "fin-report-agent",
       "args": ["start-server", "--transport", "stdio"]
     }
   }
@@ -149,26 +149,26 @@ fin_report_agent/
 ### Main Commands:
 ```bash
 # Show help
-restaurant-mcp --help
+fin-report-agent --help
 
 # Test installation
-restaurant-mcp test
+fin-report-agent test
 
 # Setup Claude Desktop
-restaurant-mcp setup-claude
+fin-report-agent setup-claude
 
 # Start MCP server
-restaurant-mcp start-server
+fin-report-agent start-server
 ```
 
 ### Command Options:
 ```bash
 # Start with specific transport
-restaurant-mcp start-server --transport stdio  # For Claude Desktop
-restaurant-mcp start-server --transport http   # For web (coming soon)
+fin-report-agent start-server --transport stdio  # For Claude Desktop
+fin-report-agent start-server --transport http   # For web (coming soon)
 
 # Specify port (HTTP mode)
-restaurant-mcp start-server --transport http --port 8000
+fin-report-agent start-server --transport http --port 8000
 ```
 
 ---
@@ -197,14 +197,14 @@ restaurant-mcp start-server --transport http --port 8000
 ### For Individual Users:
 ```bash
 uv tool install git+https://github.com/HengWoo/fin_report_agent
-restaurant-mcp start-server
+fin-report-agent start-server
 # Done! Use with Claude Desktop
 ```
 
 ### For Teams (Future - Cloudflare):
 ```bash
 # Server admin runs once
-restaurant-mcp start-server --transport http --port 8000
+fin-report-agent start-server --transport http --port 8000
 cloudflared tunnel --url http://localhost:8000
 # → https://xxx.trycloudflare.com
 
@@ -215,8 +215,8 @@ cloudflared tunnel --url http://localhost:8000
 ### For Public (Future - PyPI):
 ```bash
 # After publishing to PyPI
-pip install restaurant-financial-mcp
-restaurant-mcp start-server
+pip install fin-report-agent
+fin-report-agent start-server
 # Even simpler!
 ```
 
@@ -230,7 +230,7 @@ restaurant-mcp start-server
 - [ ] Add usage examples and tutorials
 
 ### Long Term (Future):
-- [ ] Publish to PyPI for pip install restaurant-financial-mcp
+- [ ] Publish to PyPI for pip install fin-report-agent
 - [ ] Create web dashboard for non-technical users
 - [ ] Add more financial analysis tools
 - [ ] Support other restaurant formats

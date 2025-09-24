@@ -41,7 +41,7 @@ def start_server(transport: str, port: int, host: str):
         asyncio.run(run_stdio())
     else:
         click.echo(f"🌐 HTTP transport will be available in next release")
-        click.echo(f"   For now, use: restaurant-mcp start-server --transport stdio")
+        click.echo(f"   For now, use: fin-report-agent start-server --transport stdio")
         sys.exit(1)
 
 
@@ -61,7 +61,7 @@ def setup_claude(auto: bool):
 
     mcp_config = {
         "type": "stdio",
-        "command": "restaurant-mcp",
+        "command": "fin-report-agent",
         "args": ["start-server", "--transport", "stdio"]
     }
 
@@ -119,7 +119,7 @@ def setup_claude(auto: bool):
         exists = "✓ exists" if path.exists() else ""
         click.echo(f"   - {path} {exists}")
     click.echo("\n💡 Tip: Run with --auto flag to configure automatically:")
-    click.echo("   restaurant-mcp setup-claude --auto")
+    click.echo("   fin-report-agent setup-claude --auto")
     click.echo("\n✅ After adding, restart Claude Desktop to activate the MCP server")
 
 
@@ -148,7 +148,7 @@ def test():
 
         click.echo("\n🎉 All components working correctly!")
         click.echo("\n💡 Next steps:")
-        click.echo("   1. Run: restaurant-mcp setup-claude")
+        click.echo("   1. Run: fin-report-agent setup-claude")
         click.echo("   2. Restart Claude Desktop")
         click.echo("   3. Ask Claude to analyze your restaurant Excel file")
 

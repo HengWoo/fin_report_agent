@@ -68,8 +68,8 @@ uv sync
 **Setup CLI entry points** - Add to `pyproject.toml`:
 ```toml
 [project.scripts]
-restaurant-mcp = "src.mcp_server.cli:main"
-restaurant-mcp-server = "src.mcp_server.cli:start_server"
+fin-report-agent = "src.mcp_server.cli:main"
+fin-report-agent-server = "src.mcp_server.cli:start_server"
 ```
 
 **Create CLI module** - `src/mcp_server/cli.py`:
@@ -99,8 +99,8 @@ def start_server(transport, port):
 
 **User installation (one command):**
 ```bash
-uvx --from git+https://github.com/yourusername/restaurant-financial-mcp \
-  restaurant-mcp start-server --transport streamable-http --port 8000
+uvx --from git+https://github.com/yourusername/fin-report-agent \
+  fin-report-agent start-server --transport streamable-http --port 8000
 ```
 
 **Expose via Cloudflare:**
@@ -128,7 +128,7 @@ wrangler deploy
 
 **Configuration** - `wrangler.toml`:
 ```toml
-name = "restaurant-financial-mcp"
+name = "fin-report-agent"
 main = "src/worker.py"
 compatibility_date = "2024-01-01"
 
@@ -145,12 +145,12 @@ MCP_SERVER_NAME = "restaurant-financial-analysis"
 **1. Update pyproject.toml:**
 ```toml
 [project]
-name = "restaurant-financial-mcp"
+name = "fin-report-agent"
 version = "0.1.0"
 description = "Financial analysis MCP server for Chinese restaurant reports"
 
 [project.scripts]
-restaurant-mcp = "src.mcp_server.cli:main"
+fin-report-agent = "src.mcp_server.cli:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -188,11 +188,11 @@ async def run_stdio():
 **3. User installation becomes:**
 ```bash
 # One command installation
-uvx --from git+https://github.com/yourname/restaurant-financial-mcp restaurant-mcp
+uvx --from git+https://github.com/yourname/fin-report-agent fin-report-agent
 
 # Or install and use
-uv tool install git+https://github.com/yourname/restaurant-financial-mcp
-restaurant-mcp
+uv tool install git+https://github.com/yourname/fin-report-agent
+fin-report-agent
 ```
 
 ### Phase 2: Add Cloudflare Tunnel Support
@@ -200,7 +200,7 @@ restaurant-mcp
 **For public access (optional):**
 ```bash
 # Terminal 1: Start server with HTTP transport
-uvx restaurant-mcp --transport http --port 8000
+uvx fin-report-agent --transport http --port 8000
 
 # Terminal 2: Expose via Cloudflare
 cloudflared tunnel --url http://localhost:8000
@@ -217,10 +217,10 @@ cloudflared tunnel --url http://localhost:8000
 **Make it even easier:**
 ```bash
 # Install from PyPI
-pip install restaurant-financial-mcp
+pip install fin-report-agent
 
 # Or with uvx
-uvx restaurant-financial-mcp
+uvx fin-report-agent
 ```
 
 **Users get:**
@@ -243,7 +243,7 @@ uvx restaurant-financial-mcp
 **Step 1: Add CLI Entry Point**
 - [ ] Create `src/mcp_server/cli.py`
 - [ ] Add `[project.scripts]` to `pyproject.toml`
-- [ ] Test with `uv run restaurant-mcp`
+- [ ] Test with `uv run fin-report-agent`
 
 **Step 2: Add HTTP Transport**
 - [ ] Implement HTTP server mode
@@ -306,7 +306,7 @@ uvx restaurant-financial-mcp
 **For your use case (restaurant financial analysis):**
 
 1. **Start with:** Package with CLI (like Serena)
-   - Easy installation: `uvx restaurant-mcp`
+   - Easy installation: `uvx fin-report-agent`
    - Works with Claude Code immediately
    - Can add Cloudflare later
 
@@ -343,13 +343,13 @@ uv sync
 **After implementing CLI:**
 ```bash
 # Just this!
-uvx --from git+https://github.com/you/restaurant-mcp restaurant-mcp
+uvx --from git+https://github.com/you/fin-report-agent fin-report-agent
 ```
 
 **After PyPI:**
 ```bash
 # Even simpler!
-uvx restaurant-financial-mcp
+uvx fin-report-agent
 ```
 
 This is exactly how Serena achieves its one-command installation! 🚀

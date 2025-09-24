@@ -16,40 +16,43 @@ This system uses **5 simple tools (~150 lines)** that return raw data to Claude,
 
 ## 🚀 Quick Start (One Command!)
 
-### Installation
+### For Claude Code (Recommended)
 
-**Using uv (recommended - fastest):**
+From your project directory:
+
+```bash
+claude mcp add fin-report-agent -- uvx --from git+https://github.com/HengWoo/fin_report_agent fin-report-agent start-server --transport stdio
+```
+
+That's it! Claude Code automatically configures everything.
+
+---
+
+### For Claude Desktop
+
+**Step 1: Install**
 ```bash
 uv tool install git+https://github.com/HengWoo/fin_report_agent
 ```
 
-**Using pip:**
+**Step 2: Auto-configure**
 ```bash
-pip install git+https://github.com/HengWoo/fin_report_agent
+fin-report-agent setup-claude --auto
 ```
 
-### Setup with Claude Desktop
+**Step 3: Restart Claude Desktop**
 
-**Option 1: Auto-setup (recommended)**
-```bash
-restaurant-mcp setup-claude
-# Follow the instructions to add configuration to Claude Desktop
-```
+---
 
-**Option 2: Auto-setup with flag (fully automatic)**
-```bash
-restaurant-mcp setup-claude --auto
-# Automatically writes config to Claude Desktop!
-```
+### Manual Setup (if auto-config fails)
 
-**Option 3: Manual setup**
 Add to your Claude Desktop MCP configuration:
 ```json
 {
   "mcpServers": {
     "fin-report-agent": {
       "type": "stdio",
-      "command": "restaurant-mcp",
+      "command": "fin-report-agent",
       "args": ["start-server", "--transport", "stdio"]
     }
   }
@@ -80,7 +83,7 @@ Claude will intelligently:
 
 ```bash
 # Test that everything works
-restaurant-mcp test
+fin-report-agent test
 ```
 
 ## 🛠️ The 5 Simple Tools
