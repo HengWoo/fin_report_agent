@@ -72,7 +72,9 @@ class MemoryHandler(BaseHandler):
             if context.get("recent_insights"):
                 output += "**Recent Insights:**\n"
                 for insight in context["recent_insights"]:
-                    output += f"  • [{insight['insight_type']}] {insight['description']}\n"
+                    output += (
+                        f"  • [{insight['insight_type']}] {insight['description']}\n"
+                    )
 
             if context.get("user_preferences"):
                 output += (

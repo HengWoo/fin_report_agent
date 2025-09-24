@@ -28,7 +28,9 @@ class SimpleToolsHandler(BaseHandler):
         end_col = arguments.get("end_col")
 
         try:
-            result = read_excel_region(file_path, start_row, end_row, start_col, end_col)
+            result = read_excel_region(
+                file_path, start_row, end_row, start_col, end_col
+            )
             output = f"📊 Excel Region Data\n"
             output += f"Rows {start_row}-{end_row}, Columns {start_col}-{end_col}\n"
             output += "-" * 40 + "\n"

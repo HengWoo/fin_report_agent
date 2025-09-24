@@ -35,7 +35,9 @@ class NavigationHandler(BaseHandler):
                 output += f"   Level: {account.level}\n"
                 if account.values:
                     output += f"   Values: {account.values}\n"
-                output += f"   {'🍃 Leaf' if account.is_leaf() else '📂 Has children'}\n\n"
+                output += (
+                    f"   {'🍃 Leaf' if account.is_leaf() else '📂 Has children'}\n\n"
+                )
 
             if len(accounts) > 10:
                 output += f"... and {len(accounts) - 10} more accounts\n"
@@ -97,7 +99,9 @@ class NavigationHandler(BaseHandler):
             output += f"  Path: {account['name_path']}\n"
             output += f"  Type: {account['account_type']}\n"
             output += f"  Level: {account['level']}\n"
-            output += f"  Status: {'🍃 Leaf' if account['is_leaf'] else '📂 Parent'}\n\n"
+            output += (
+                f"  Status: {'🍃 Leaf' if account['is_leaf'] else '📂 Parent'}\n\n"
+            )
 
             if context.get("ancestors"):
                 output += f"**Ancestors (path from root):**\n"
@@ -110,9 +114,7 @@ class NavigationHandler(BaseHandler):
                 for child in context["children"][:5]:
                     output += f"  ├─ {child['name']} ({child['account_type']})\n"
                 if len(context["children"]) > 5:
-                    output += (
-                        f"  └─ ... and {len(context['children']) - 5} more\n"
-                    )
+                    output += f"  └─ ... and {len(context['children']) - 5} more\n"
                 output += "\n"
 
             if context.get("siblings"):

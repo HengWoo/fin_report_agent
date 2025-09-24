@@ -33,7 +33,9 @@ class LegacyAnalysisHandler(BaseHandler):
         try:
             hierarchy_parser = self.context.get("hierarchy_parser")
             if not hierarchy_parser:
-                return self.format_error("hierarchy_parser not available", "parse_excel")
+                return self.format_error(
+                    "hierarchy_parser not available", "parse_excel"
+                )
 
             hierarchy_result = hierarchy_parser.parse_hierarchy(file_path)
 
@@ -56,19 +58,19 @@ class LegacyAnalysisHandler(BaseHandler):
                 total_excluded = sum(len(cols) for cols in excluded.values())
                 if total_excluded > 0:
                     output += f"• 排除列: {total_excluded} 个\n"
-                    if excluded.get('notes'):
+                    if excluded.get("notes"):
                         output += f"  - 备注列: {len(excluded['notes'])} 个\n"
-                    if excluded.get('ratios'):
+                    if excluded.get("ratios"):
                         output += f"  - 占比列: {len(excluded['ratios'])} 个\n"
-                    if excluded.get('subtotals'):
+                    if excluded.get("subtotals"):
                         output += f"  - 小计列: {len(excluded['subtotals'])} 个 (防止重复计算)\n"
 
                 if accounts:
                     output += "\n主要账户示例:\n"
                     for account in accounts[:5]:
-                        name = account.get('name', '')
-                        value = account.get('total_value', 0)
-                        used_subtotal = account.get('used_subtotal', False)
+                        name = account.get("name", "")
+                        value = account.get("total_value", 0)
+                        used_subtotal = account.get("used_subtotal", False)
                         marker = " ✓(小计)" if used_subtotal else ""
                         output += f"• {name}: ¥{value:,.2f}{marker}\n"
                     if len(accounts) > 5:
@@ -76,7 +78,7 @@ class LegacyAnalysisHandler(BaseHandler):
 
                 col_report = column_intelligence.get("classification_report", "")
                 if col_report:
-                    output += "\n" + "="*50 + "\n"
+                    output += "\n" + "=" * 50 + "\n"
                     output += col_report
 
                 return self.format_success(output)
@@ -95,12 +97,16 @@ class LegacyAnalysisHandler(BaseHandler):
         strict_mode = arguments.get("strict_mode", False)
 
         if not financial_data:
-            return self.format_error("financial_data is required", "validate_financial_data")
+            return self.format_error(
+                "financial_data is required", "validate_financial_data"
+            )
 
         try:
             validator = self.context.get("validator")
             if not validator:
-                return self.format_error("validator not available", "validate_financial_data")
+                return self.format_error(
+                    "validator not available", "validate_financial_data"
+                )
 
             validation_results = validator.validate_restaurant_data(financial_data)
 
@@ -145,7 +151,9 @@ class LegacyAnalysisHandler(BaseHandler):
         try:
             analytics_engine = self.context.get("analytics_engine")
             if not analytics_engine:
-                return self.format_error("analytics_engine not available", "calculate_kpis")
+                return self.format_error(
+                    "analytics_engine not available", "calculate_kpis"
+                )
 
             kpis = analytics_engine.calculate_kpis(income_statement_data)
 
@@ -198,15 +206,22 @@ class LegacyAnalysisHandler(BaseHandler):
         include_forecasting = arguments.get("include_forecasting", True)
 
         if not historical_statements:
-            return self.format_error("historical_statements is required", "analyze_trends")
+            return self.format_error(
+                "historical_statements is required", "analyze_trends"
+            )
 
         if len(historical_statements) < 2:
-            return self.format_error("At least 2 historical statements required for trend analysis", "analyze_trends")
+            return self.format_error(
+                "At least 2 historical statements required for trend analysis",
+                "analyze_trends",
+            )
 
         try:
             analytics_engine = self.context.get("analytics_engine")
             if not analytics_engine:
-                return self.format_error("analytics_engine not available", "analyze_trends")
+                return self.format_error(
+                    "analytics_engine not available", "analyze_trends"
+                )
 
             trends = analytics_engine.analyze_trends(historical_statements)
 
@@ -218,7 +233,11 @@ class LegacyAnalysisHandler(BaseHandler):
             if "revenue_trend" in trends:
                 revenue_trend = trends["revenue_trend"]
                 growth_rate = revenue_trend.get("growth_rate", 0) * 100
-                direction = "📈 上升" if growth_rate > 5 else "📉 下降" if growth_rate < -5 else "➡️ 稳定"
+                direction = (
+                    "📈 上升"
+                    if growth_rate > 5
+                    else "📉 下降" if growth_rate < -5 else "➡️ 稳定"
+                )
                 output += f"营业收入趋势: {direction} ({growth_rate:+.1f}%)\n"
 
             if "cost_trends" in trends:
@@ -232,7 +251,9 @@ class LegacyAnalysisHandler(BaseHandler):
             if include_forecasting and "forecast" in trends:
                 forecast = trends["forecast"]
                 output += "\n🔮 预测分析:\n"
-                output += f"• 下期收入预测: {forecast.get('next_period_revenue', 'N/A')}\n"
+                output += (
+                    f"• 下期收入预测: {forecast.get('next_period_revenue', 'N/A')}\n"
+                )
                 output += f"• 增长预期: {forecast.get('growth_expectation', 'N/A')}\n"
 
             return self.format_success(output)
@@ -249,13 +270,17 @@ class LegacyAnalysisHandler(BaseHandler):
         if not kpis:
             return self.format_error("kpis is required", "generate_insights")
         if not income_statement:
-            return self.format_error("income_statement is required", "generate_insights")
+            return self.format_error(
+                "income_statement is required", "generate_insights"
+            )
 
         try:
             analytics_engine = self.context.get("analytics_engine")
             config = self.context.get("config")
             if not analytics_engine:
-                return self.format_error("analytics_engine not available", "generate_insights")
+                return self.format_error(
+                    "analytics_engine not available", "generate_insights"
+                )
 
             insights = analytics_engine.generate_insights(kpis, income_statement)
 

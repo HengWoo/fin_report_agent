@@ -32,14 +32,18 @@ class ComplexAnalysisHandler(BaseHandler):
             return self.format_error("file_path is required", "comprehensive_analysis")
 
         if not Path(file_path).exists():
-            return self.format_error(f"File not found: {file_path}", "comprehensive_analysis")
+            return self.format_error(
+                f"File not found: {file_path}", "comprehensive_analysis"
+            )
 
         try:
             orchestrator = self.context.get("orchestrator")
             validation_state_manager = self.context.get("validation_state_manager")
 
             if not orchestrator:
-                return self.format_error("orchestrator not available", "comprehensive_analysis")
+                return self.format_error(
+                    "orchestrator not available", "comprehensive_analysis"
+                )
 
             self.logger.info(f"Starting orchestrated analysis of {file_path}")
 
@@ -49,13 +53,17 @@ class ComplexAnalysisHandler(BaseHandler):
                 output = "⚠️ 验证要求 - 必须先完成账户结构验证\n"
                 output += "=" * 50 + "\n"
                 output += f"📁 文件: {file_path}\n"
-                output += f"状态: {analysis_result.get('status', 'validation_required')}\n\n"
+                output += (
+                    f"状态: {analysis_result.get('status', 'validation_required')}\n\n"
+                )
 
                 output += f"💡 {analysis_result.get('message', 'Account structure validation required')}\n\n"
 
                 if analysis_result.get("hierarchy"):
                     output += "📊 发现账户结构:\n"
-                    output += f"• 总账户数: {analysis_result.get('total_accounts', 0)}\n"
+                    output += (
+                        f"• 总账户数: {analysis_result.get('total_accounts', 0)}\n"
+                    )
                     output += f"• 安全计算账户: {analysis_result.get('safe_accounts_count', 0)}\n"
                     output += f"• 潜在重复计算风险: {analysis_result.get('potential_issues', 0)}\n\n"
 
@@ -68,7 +76,9 @@ class ComplexAnalysisHandler(BaseHandler):
                 return self.format_success(output)
 
             if analysis_result.get("error"):
-                return self.format_error(analysis_result["error"], "comprehensive_analysis")
+                return self.format_error(
+                    analysis_result["error"], "comprehensive_analysis"
+                )
 
             report_type = analysis_result.get("report_type", "Unknown")
             periods = analysis_result.get("periods", [])
@@ -89,13 +99,13 @@ class ComplexAnalysisHandler(BaseHandler):
 
                 revenue = 0
                 for key in calculations.keys():
-                    if '营业收入' in key and not key.endswith('_ratio'):
+                    if "营业收入" in key and not key.endswith("_ratio"):
                         revenue = calculations[key]
                         break
 
-                food_cost = calculations.get('（二）.食品成本', 0)
-                labor_cost = calculations.get('（三）.人工成本', 0)
-                investment = calculations.get('九、长期待摄费用_total_investment', 0)
+                food_cost = calculations.get("（二）.食品成本", 0)
+                labor_cost = calculations.get("（三）.人工成本", 0)
+                investment = calculations.get("九、长期待摄费用_total_investment", 0)
 
                 if revenue > 0:
                     output += f"• 总营业收入: ¥{revenue:,.2f}\n"
@@ -120,25 +130,25 @@ class ComplexAnalysisHandler(BaseHandler):
             output += "-" * 30 + "\n"
 
             for key, value in list(calculations.items())[:10]:
-                if not key.endswith('_ratio') and not key.endswith('_monthly'):
+                if not key.endswith("_ratio") and not key.endswith("_monthly"):
                     output += f"• {key}: ¥{value:,.2f}\n"
 
             output += "\n📊 财务比率\n"
             output += "-" * 30 + "\n"
             for key, value in calculations.items():
-                if key.endswith('_ratio'):
+                if key.endswith("_ratio"):
                     output += f"• {key}: {value:.1f}%\n"
 
             output += "\n✅ 数据验证结果\n"
             output += "-" * 30 + "\n"
-            if validation.get('valid'):
+            if validation.get("valid"):
                 output += "• 验证状态: ✅ 通过\n"
                 output += f"• 置信度: {validation.get('confidence', 0):.1%}\n"
             else:
                 output += "• 验证状态: ⚠️ 需要审查\n"
-                if validation.get('issues'):
+                if validation.get("issues"):
                     output += "• 发现的问题:\n"
-                    for issue in validation['issues']:
+                    for issue in validation["issues"]:
                         output += f"  - {issue}\n"
 
             if warnings:
@@ -147,7 +157,7 @@ class ComplexAnalysisHandler(BaseHandler):
                 for warning in warnings:
                     output += f"• {warning}\n"
 
-            phases = analysis_result.get('analysis_phases', [])
+            phases = analysis_result.get("analysis_phases", [])
             if phases:
                 output += "\n🔍 分析流程\n"
                 output += "-" * 30 + "\n"
@@ -155,7 +165,9 @@ class ComplexAnalysisHandler(BaseHandler):
 
             if language == "both":
                 output += "\n" + "=" * 50 + "\n"
-                output += "🏪 Restaurant Financial Analysis Report (Claude Orchestrated)\n"
+                output += (
+                    "🏪 Restaurant Financial Analysis Report (Claude Orchestrated)\n"
+                )
                 output += f"📁 File: {file_path}\n"
                 output += f"📅 Report Type: {report_type}\n"
                 output += f"📊 Analysis Periods: {', '.join(periods)}\n"
@@ -177,22 +189,30 @@ class ComplexAnalysisHandler(BaseHandler):
         business_context = arguments.get("business_context")
 
         if not file_path:
-            return self.format_error("file_path is required", "adaptive_financial_analysis")
+            return self.format_error(
+                "file_path is required", "adaptive_financial_analysis"
+            )
 
         if not Path(file_path).exists():
-            return self.format_error(f"File not found: {file_path}", "adaptive_financial_analysis")
+            return self.format_error(
+                f"File not found: {file_path}", "adaptive_financial_analysis"
+            )
 
         try:
             adaptive_analyzer = self.context.get("adaptive_analyzer")
             if not adaptive_analyzer:
-                return self.format_error("adaptive_analyzer not available", "adaptive_financial_analysis")
+                return self.format_error(
+                    "adaptive_analyzer not available", "adaptive_financial_analysis"
+                )
 
             analysis_prep = await adaptive_analyzer.analyze_excel(
                 file_path, analysis_focus, business_context
             )
 
             if analysis_prep["status"] == "error":
-                return self.format_error(analysis_prep['error'], "adaptive_financial_analysis")
+                return self.format_error(
+                    analysis_prep["error"], "adaptive_financial_analysis"
+                )
 
             output = f"🤖 智能财务分析 - {Path(file_path).name}\n"
             output += "=" * 60 + "\n"
@@ -224,15 +244,21 @@ class ComplexAnalysisHandler(BaseHandler):
         show_details = arguments.get("show_details", True)
 
         if not file_path:
-            return self.format_error("file_path is required", "validate_account_structure")
+            return self.format_error(
+                "file_path is required", "validate_account_structure"
+            )
 
         if not Path(file_path).exists():
-            return self.format_error(f"File not found: {file_path}", "validate_account_structure")
+            return self.format_error(
+                f"File not found: {file_path}", "validate_account_structure"
+            )
 
         try:
             hierarchy_parser = self.context.get("hierarchy_parser")
             if not hierarchy_parser:
-                return self.format_error("hierarchy_parser not available", "validate_account_structure")
+                return self.format_error(
+                    "hierarchy_parser not available", "validate_account_structure"
+                )
 
             self.logger.info(f"Validating account structure for: {file_path}")
 
