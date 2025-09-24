@@ -10,9 +10,16 @@ A production-ready financial reporting agent that processes Chinese restaurant E
 **MCP Server Name:** `fin-report-agent`
 **GitHub:** https://github.com/HengWoo/fin_report_agent
 
-### Recent Major Updates (2025-09-24)
+### Recent Major Updates
 
-**✅ Complete Renaming & Branding:**
+**🎯 Multi-Turn Intelligence (2025-09-25) - NEW!**
+- Serena-inspired multi-turn conversation capabilities
+- LSP-like financial symbol navigation (`find_account`, `get_financial_overview`)
+- Thinking/reflection tools (`think_about_financial_data`, `think_about_assumptions`)
+- Persistent memory system for session context and insights
+- Progressive analysis refinement across conversation turns
+
+**✅ Complete Renaming & Branding (2025-09-24):**
 - Unified all names to `fin-report-agent` (was `restaurant-mcp`, `restaurant-financial-analysis`)
 - Updated CLI commands, MCP server name, package name, and all documentation
 - Consistent naming across Claude Code and Claude Desktop
@@ -126,6 +133,105 @@ The system provides built-in English/Chinese bilingual analysis:
 - Generates parallel analysis in English and Chinese
 - Maintains cultural business context
 - Formats reports for different audiences (professional, investor, general)
+
+## 🧠 Multi-Turn Intelligence System (NEW!)
+
+**Inspired by Serena's multi-turn capabilities**, the agent now features sophisticated conversation management and progressive analysis refinement.
+
+### Core Components
+
+**1. Financial Memory Manager (`src/mcp_server/financial_memory.py`)**
+- Session-based conversation tracking
+- Persistent insight storage across turns
+- User preference learning
+- Analysis history and context preservation
+- Pattern recognition and knowledge accumulation
+
+**2. Financial Symbol Navigator (`src/mcp_server/financial_navigator.py`)**
+- LSP-like hierarchical account navigation
+- Intelligent account search (`find_account`)
+- Context-aware data retrieval (`get_account_context`)
+- Relationship discovery (`find_referencing_accounts`)
+- Leaf account identification for safe calculations
+
+**3. Thinking Tools (`src/mcp_server/thinking_tools.py`)**
+- Metacognitive reflection on collected data
+- Analysis completeness checking
+- Assumption validation
+- Data quality assessment
+- Next-step recommendations
+
+### Multi-Turn Tool Catalog
+
+**LSP-Like Navigation Tools:**
+- `find_account`: Search accounts by pattern (supports Chinese/English)
+- `get_financial_overview`: Top-level financial structure (like symbols overview)
+- `get_account_context`: Get account with parent, children, siblings
+
+**Thinking & Reflection Tools:**
+- `think_about_financial_data`: Assess data sufficiency for analysis goals
+- `think_about_analysis_completeness`: Check if all requirements met
+- `think_about_assumptions`: Validate assumptions against best practices
+
+**Memory & Session Tools:**
+- `save_analysis_insight`: Store discoveries for future reference
+- `get_session_context`: View session history and progress
+- `write_memory_note`: Document patterns/knowledge (like Serena's memories)
+
+### Multi-Turn Workflow Example
+
+```
+Turn 1:
+User: "Analyze this restaurant financial report"
+Claude:
+1. get_excel_info() → Understand structure
+2. think_about_financial_data() → Assess what's needed
+3. Response: "I see a 139-row Excel file. Let me explore the structure..."
+
+Turn 2:
+Claude:
+4. get_financial_overview() → See top-level accounts
+5. find_account("收入") → Locate revenue accounts
+6. think_about_analysis_completeness() → Check progress
+7. Response: "Found revenue structure. Need to verify account hierarchy..."
+
+Turn 3:
+User: "Focus on profitability analysis"
+Claude:
+8. get_account_context("营业收入") → Get revenue details
+9. find_account("成本") → Locate cost accounts
+10. think_about_assumptions() → Validate approach
+11. save_analysis_insight() → Store findings
+12. Response: "Here's the profitability analysis with insights saved..."
+
+Turn 4:
+Claude:
+13. get_session_context() → Review what's been done
+14. write_memory_note("revenue_patterns") → Document patterns
+15. Final comprehensive analysis with full context
+```
+
+### Key Benefits
+
+**Progressive Refinement:**
+- Analysis improves across conversation turns
+- Context preserved between questions
+- Previous insights inform new analysis
+
+**Transparent Reasoning:**
+- Every step visible to user
+- Assumptions explicitly validated
+- Decision rationale documented
+
+**Knowledge Accumulation:**
+- Patterns stored in memory
+- User preferences learned
+- Domain knowledge builds over time
+
+**Intelligent Navigation:**
+- LSP-like account traversal
+- Contextual data retrieval
+- Relationship-aware analysis
 
 ## Installation & Distribution
 
