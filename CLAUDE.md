@@ -6,6 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A production-ready financial reporting agent that processes Chinese restaurant Excel files and generates bilingual business analysis. Built using Claude Code SDK with MCP (Model Context Protocol) server integration for AI-powered analysis.
 
+**Package Name:** `fin-report-agent`
+**MCP Server Name:** `fin-report-agent`
+**GitHub:** https://github.com/HengWoo/fin_report_agent
+
+### Recent Major Updates (2025-09-24)
+
+**✅ Complete Renaming & Branding:**
+- Unified all names to `fin-report-agent` (was `restaurant-mcp`, `restaurant-financial-analysis`)
+- Updated CLI commands, MCP server name, package name, and all documentation
+- Consistent naming across Claude Code and Claude Desktop
+
+**✅ Claude Code Support Added:**
+- One-command installation: `claude mcp add fin-report-agent -- uvx ...`
+- Per-project configuration
+- No global installation needed
+
+**✅ Claude Desktop Auto-Configuration:**
+- `fin-report-agent setup-claude --auto` automatically writes config
+- Detects config locations across platforms (macOS, Linux)
+- Fallback to manual instructions if needed
+
 ## Essential Commands
 
 ### Environment and Dependencies
@@ -43,11 +64,17 @@ uv run ruff check --fix src/ tests/
 
 ### MCP Server Management
 ```bash
+# Test the MCP server locally
+uv run fin-report-agent test
+
+# Run MCP server for development
+uv run fin-report-agent start-server --transport stdio
+
 # Check MCP server status in Claude Code
 claude mcp list
 
 # Get server details
-claude mcp get restaurant-financial-analysis
+claude mcp get fin-report-agent
 ```
 
 ## Architecture Overview
@@ -99,6 +126,39 @@ The system provides built-in English/Chinese bilingual analysis:
 - Generates parallel analysis in English and Chinese
 - Maintains cultural business context
 - Formats reports for different audiences (professional, investor, general)
+
+## Installation & Distribution
+
+### For End Users
+
+**Claude Code (Recommended - One Command):**
+```bash
+claude mcp add fin-report-agent -- uvx --from git+https://github.com/HengWoo/fin_report_agent fin-report-agent start-server --transport stdio
+```
+
+**Claude Desktop (Auto-Configuration):**
+```bash
+# Step 1: Install globally
+uv tool install git+https://github.com/HengWoo/fin_report_agent
+
+# Step 2: Auto-configure
+fin-report-agent setup-claude --auto
+
+# Step 3: Restart Claude Desktop
+```
+
+**Key Differences:**
+- **Claude Code**: Per-project, no installation, uses `uvx` on-the-fly, config in `.claude/mcp.json`
+- **Claude Desktop**: Global install, auto-config writes to `~/.claude/mcp.json`
+
+### CLI Commands Available
+
+```bash
+fin-report-agent test              # Test MCP server components
+fin-report-agent setup-claude      # Show setup instructions
+fin-report-agent setup-claude --auto  # Auto-configure Claude Desktop
+fin-report-agent start-server      # Start MCP server (stdio/http)
+```
 
 ## Integration with Claude Code
 
