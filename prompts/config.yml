@@ -1,0 +1,74 @@
+# Prompt System Configuration
+# Central configuration for the Claude-orchestrated financial analysis system
+
+settings:
+  # Enable hot reload for prompt changes without restart
+  hot_reload: true
+
+  # Default analysis context
+  default_context: analysis
+
+  # Validation strictness level (strict, moderate, loose)
+  validation_level: strict
+
+  # Language settings
+  language: zh_en  # Bilingual Chinese-English
+
+  # Template engine settings
+  template_engine: jinja2
+
+  # File watching for hot reload
+  watch_patterns:
+    - "*.yml"
+    - "*.yaml"
+
+  # Cache settings
+  cache_responses: true
+  cache_ttl_seconds: 300
+
+# Context definitions
+contexts:
+  exploration:
+    description: "Initial data discovery and structure understanding"
+    confidence_threshold: 0.7
+    max_iterations: 3
+
+  analysis:
+    description: "Deep financial analysis and calculation"
+    confidence_threshold: 0.85
+    max_iterations: 5
+
+  validation:
+    description: "Result verification and anomaly detection"
+    confidence_threshold: 0.9
+    max_iterations: 2
+
+# Template categories
+template_categories:
+  - name: structure
+    description: "Templates for understanding Excel structure"
+    path: templates/structure/
+
+  - name: accounting
+    description: "Templates for accounting analysis"
+    path: templates/accounting/
+
+  - name: extraction
+    description: "Templates for data extraction decisions"
+    path: templates/extraction/
+
+  - name: validation
+    description: "Templates for result validation"
+    path: templates/validation/
+
+# Logging configuration
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "prompts/prompt_usage.log"
+
+# Performance settings
+performance:
+  max_prompt_length: 10000
+  max_response_length: 5000
+  timeout_seconds: 30

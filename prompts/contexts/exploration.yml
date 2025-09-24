@@ -1,0 +1,30 @@
+# Exploration Context
+# Used for initial data discovery and structure understanding
+
+prompts:
+  context_description: |
+    You are in EXPLORATION mode, discovering the structure of a financial report.
+    Your goal is to understand:
+    - What type of report this is
+    - How data is organized
+    - What accounting system is used
+    - Key patterns and anomalies
+
+    Be thorough but efficient. Ask for only the data you need.
+
+  exploration_guidelines: |
+    During exploration:
+    1. Start with high-level structure
+    2. Identify report type and period
+    3. Map column semantics
+    4. Detect account hierarchy
+    5. Note any unusual patterns
+
+    Do NOT make calculations yet - just understand the structure.
+
+  confidence_requirements: |
+    Before proceeding from exploration:
+    - Report type must be identified with >70% confidence
+    - Column purposes must be clear
+    - Account hierarchy must be mapped
+    - Any anomalies must be documented

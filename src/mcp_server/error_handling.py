@@ -198,7 +198,7 @@ class ErrorRecoveryManager:
 
     def _assess_severity(self, error: Exception, category: ErrorCategory, context: ErrorContext) -> ErrorSeverity:
         """Assess the severity of an error."""
-        if category == ErrorCategory.CRITICAL or isinstance(error, (MemoryError, SystemError)):
+        if isinstance(error, (MemoryError, SystemError)):
             return ErrorSeverity.CRITICAL
         elif category in [ErrorCategory.SYSTEM, ErrorCategory.DATA_CORRUPTION]:
             return ErrorSeverity.HIGH

@@ -1,0 +1,81 @@
+# Template for validating investment calculations
+
+prompts:
+  validate_investment_calculation:
+    description: "Validate and explain investment-related calculations"
+    parameters:
+      - account_name
+      - account_name_english
+      - monthly_values
+      - row_number
+      - monthly_revenue
+      - restaurant_name
+    template: |
+      Context: Analyzing investment for {{ restaurant_name }}
+
+      ACCOUNT FOUND IN P&L:
+      - Chinese Name: "{{ account_name }}"
+      - English Translation: "{{ account_name_english }}"
+      - Row Number: {{ row_number }}
+      - Monthly Values Found:
+        {% for month, value in monthly_values.items() %}
+        - {{ month }}: ¥{{ "{:,.2f}".format(value) }}
+        {% endfor %}
+      {% set avg_monthly = 24635 %}
+      - Average Monthly: ~¥24,635 (calculated from data)
+
+      CRITICAL ANALYSIS REQUIRED:
+
+      {% if "长期待摊费用" in account_name or "long-term deferred" in account_name_english.lower() %}
+      ⚠️ IMPORTANT: "长期待摊费用" typically represents MONTHLY AMORTIZATION EXPENSE, not the original investment!
+      {% endif %}
+
+      1. **EXPENSE vs INVESTMENT DETERMINATION:**
+         - Is this a monthly expense appearing in the P&L?
+         - Or is this the total investment amount?
+         - Key indicator: P&L statements show expenses, not investments
+
+      2. **AMORTIZATION PERIOD ANALYSIS:**
+         For restaurant investments, typical amortization periods are:
+         - Equipment (设施设备): 36-60 months
+         - Renovation (装修): 36-60 months
+         - Pre-opening (开办费): 36 months
+         - Standard for tax purposes: often 36 months
+
+      3. **INVESTMENT CALCULATION:**
+         If this is monthly amortization:
+         - 36-month total: ¥{{ "{:,.2f}".format(monthly_values.values() | sum / monthly_values.values() | length * 36) }}
+         - 48-month total: ¥{{ "{:,.2f}".format(monthly_values.values() | sum / monthly_values.values() | length * 48) }}
+         - 60-month total: ¥{{ "{:,.2f}".format(monthly_values.values() | sum / monthly_values.values() | length * 60) }}
+
+      4. **REASONABLENESS CHECK:**
+         Restaurant monthly revenue: ¥{{ "{:,.2f}".format(monthly_revenue) }}
+
+         Typical investment ratios for restaurants:
+         - Total investment: 3-12 months of revenue
+         - Equipment: 1-3 months of revenue
+         - Renovation: 2-6 months of revenue
+
+         {% set investment_36 = monthly_values.values() | sum / monthly_values.values() | length * 36 %}
+         {% set months_of_revenue = investment_36 / monthly_revenue %}
+
+         36-month calculation = {{ "{:.1f}".format(months_of_revenue) }} months of revenue
+         Assessment: {% if months_of_revenue < 3 %}Low{% elif months_of_revenue < 12 %}Reasonable{% else %}High - verify{% endif %}
+
+      5. **CHILD ACCOUNT CHECK:**
+         Does this account have children that break down the components?
+         If yes, use children for accurate calculation to avoid double counting.
+
+      REQUIRED VALIDATION RESPONSE:
+      ```json
+      {
+        "account_type": "amortization_expense/investment_total",
+        "monthly_amount": {{ monthly_values.values() | sum / monthly_values.values() | length }},
+        "recommended_period_months": 36,
+        "calculated_investment": 0,
+        "confidence": 0.85,
+        "reasoning": "Explanation here",
+        "warnings": ["List any concerns"],
+        "recommendation": "Use this value for investment calculation"
+      }
+      ```

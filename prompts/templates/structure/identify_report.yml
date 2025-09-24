@@ -1,0 +1,74 @@
+# Template for identifying financial report type and structure
+
+prompts:
+  identify_report_type:
+    description: "Identify the type of financial report and its structure"
+    parameters:
+      - file_name
+      - headers
+      - sample_rows
+      - shape
+    template: |
+      As an experienced financial analyst examining a Chinese restaurant's Excel file, please analyze the following structure:
+
+      File Name: {{ file_name }}
+      Dimensions: {{ shape.total_rows }} rows × {{ shape.total_columns }} columns
+
+      POTENTIAL HEADER ROWS:
+      {% for header in headers %}
+      Row {{ header['row_index'] }}:
+      {% for value in header['values'][:10] %}
+        {% if value and value != 'nan' %}[{{ value }}] {% endif %}
+      {% endfor %}
+      ({{ header['non_null_count'] }} non-null values)
+      {% endfor %}
+
+      SAMPLE DATA ROWS:
+      {% for row in sample_rows[:3] %}
+      Row {{ row['row_index'] }}:
+      {% for value in row['values'][:10] %}
+        {% if value and value != 'nan' and value != 0 %}[{{ value }}] {% endif %}
+      {% endfor %}
+      {% endfor %}
+
+      Please identify:
+
+      1. REPORT TYPE:
+         - Is this a 损益表/利润表 (Income Statement/P&L)?
+         - Is this a 资产负债表 (Balance Sheet)?
+         - Is this a 现金流量表 (Cash Flow Statement)?
+         - Or another type?
+
+      2. ACCOUNTING SYSTEM:
+         - Chinese GAAP (中国会计准则)
+         - IFRS
+         - Other
+
+      3. PERIOD COVERED:
+         - What months/years are included?
+         - Is it monthly, quarterly, or annual data?
+         - Which columns contain which periods?
+
+      4. COLUMN PATTERN:
+         - Do columns alternate between values and ratios (数值/占比)?
+         - Which column likely contains account names?
+         - Is there a 合计 (total) column?
+         - Is there a 备注 (notes) column?
+
+      5. BUSINESS TYPE CONFIRMATION:
+         - Is this clearly a restaurant business?
+         - What indicators confirm this (e.g., 食品成本, 餐厅费用)?
+
+      Provide a structured response in JSON format:
+      ```json
+      {
+        "report_type": "P&L/Balance Sheet/etc",
+        "report_type_chinese": "损益表/资产负债表/等",
+        "accounting_system": "Chinese GAAP/IFRS/etc",
+        "periods": ["month1", "month2", ...],
+        "column_pattern": "alternating/sequential/other",
+        "account_name_column": 0,
+        "business_type": "restaurant",
+        "confidence": 0.95
+      }
+      ```

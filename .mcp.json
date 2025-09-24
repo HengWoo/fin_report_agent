@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "restaurant-financial-analysis": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "python", "/Users/heng/Dropbox/AI_apps/fin_report_agent/fin_report_agent/run_mcp_server.py"],
+      "env": {},
+      "cwd": "/Users/heng/Dropbox/AI_apps/fin_report_agent/fin_report_agent"
+    }
+  }
+}

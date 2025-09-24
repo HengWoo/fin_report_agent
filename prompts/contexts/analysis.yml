@@ -1,0 +1,37 @@
+# Analysis Context
+# Used for deep financial analysis and calculation
+
+prompts:
+  context_description: |
+    You are in ANALYSIS mode, performing detailed financial calculations.
+    You have already understood the structure and are now:
+    - Extracting specific values
+    - Performing calculations
+    - Applying accounting rules
+    - Generating insights
+
+    Be precise with calculations and explain your reasoning.
+
+  analysis_guidelines: |
+    During analysis:
+    1. Use only validated column mappings
+    2. Apply appropriate accounting principles
+    3. Check for parent-child relationships
+    4. Avoid double counting
+    5. Document all assumptions
+
+    CRITICAL: Never sum ratio columns with value columns!
+
+  calculation_rules: |
+    For calculations:
+    - Investment = Monthly amortization × Period (typically 36-60 months)
+    - Revenue = Sum of operating months only
+    - Costs = Direct costs only, exclude overhead allocations
+    - Profit margins = Based on industry standards
+
+  chinese_accounting_notes: |
+    Chinese financial statements often:
+    - Alternate value and ratio columns (数值/占比)
+    - Include pre-calculated totals (合计)
+    - Use numbered hierarchy (一、二、三 for primary, (一)(二) for secondary)
+    - Show both 应收 (receivable) and 实收 (actual)

@@ -1,0 +1,69 @@
+# Simplified template for validating investment calculations
+
+prompts:
+  validate_investment_calculation:
+    description: "Validate and explain investment-related calculations"
+    parameters:
+      - account_name
+      - account_name_english
+      - monthly_values
+      - row_number
+      - monthly_revenue
+      - restaurant_name
+    template: |
+      Context: Analyzing investment for {{ restaurant_name }}
+
+      ACCOUNT FOUND IN P&L:
+      - Chinese Name: "{{ account_name }}"
+      - English Translation: "{{ account_name_english }}"
+      - Row Number: {{ row_number }}
+      - Monthly Values: Provided in monthly_values parameter
+      - Monthly Revenue: ¥{{ monthly_revenue }}
+
+      CRITICAL ANALYSIS REQUIRED:
+
+      {% if "长期待摊费用" in account_name %}
+      ⚠️ IMPORTANT: "长期待摊费用" typically represents MONTHLY AMORTIZATION EXPENSE, not the original investment!
+      {% endif %}
+
+      1. **EXPENSE vs INVESTMENT DETERMINATION:**
+         - Is this a monthly expense appearing in the P&L?
+         - Or is this the total investment amount?
+         - Key indicator: P&L statements show expenses, not investments
+
+      2. **AMORTIZATION PERIOD ANALYSIS:**
+         For restaurant investments, typical amortization periods are:
+         - Equipment (设施设备): 36-60 months
+         - Renovation (装修): 36-60 months
+         - Pre-opening (开办费): 36 months
+         - Standard for tax purposes: often 36 months
+
+      3. **INVESTMENT CALCULATION:**
+         If this is monthly amortization of ~¥24,635:
+         - 36-month total: ¥886,860
+         - 48-month total: ¥1,182,480
+         - 60-month total: ¥1,478,100
+
+      4. **REASONABLENESS CHECK:**
+         Typical investment ratios for restaurants:
+         - Total investment: 3-12 months of revenue
+         - Equipment: 1-3 months of revenue
+         - Renovation: 2-6 months of revenue
+
+      5. **CHILD ACCOUNT CHECK:**
+         Does this account have children that break down the components?
+         If yes, use children for accurate calculation to avoid double counting.
+
+      REQUIRED VALIDATION RESPONSE:
+      ```json
+      {
+        "account_type": "amortization_expense/investment_total",
+        "monthly_amount": 24635,
+        "recommended_period_months": 36,
+        "calculated_investment": 886860,
+        "confidence": 0.85,
+        "reasoning": "Explanation here",
+        "warnings": ["List any concerns"],
+        "recommendation": "Use this value for investment calculation"
+      }
+      ```

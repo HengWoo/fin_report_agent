@@ -1,0 +1,69 @@
+# Template for classifying column purposes in financial reports
+
+prompts:
+  classify_columns:
+    description: "Classify each column's purpose in the financial report"
+    parameters:
+      - report_type
+      - columns
+      - header_row
+    template: |
+      You are analyzing column headers from a {{ report_type }} (Chinese restaurant financial statement).
+
+      COLUMN HEADERS:
+      {% for col in columns %}
+      Column {{ col.index }}: "{{ col.header }}"
+        - Sample values: {{ col.samples[:3] }}
+        - Non-null count: {{ col.non_null_count }}
+        - Detected types: {{ col.data_types }}
+      {% endfor %}
+
+      As an accounting expert familiar with Chinese financial statements, classify each column into ONE of these categories:
+
+      1. **ACCOUNT_NAME** - Contains account names (科目名称)
+         - Usually column 0
+         - Contains text like "营业收入", "原材料成本", etc.
+
+      2. **VALUE** - Contains monetary values for a specific period
+         - Headers like "1月", "2月", "6月", "June", etc.
+         - Contains actual financial amounts
+         - These columns CAN be summed
+
+      3. **RATIO** - Contains percentages or ratios
+         - Headers contain "占比", "%", "率", "ratio"
+         - Values typically between 0-100 or 0-1
+         - These columns must NEVER be summed with values
+
+      4. **TOTAL** - Pre-calculated totals
+         - Headers contain "合计", "总计", "Total", "Sum"
+         - Already summed, should not be added again
+
+      5. **META** - Metadata or notes
+         - Headers contain "备注", "说明", "Notes", "Comment"
+         - Non-numeric descriptive information
+
+      6. **EMPTY** - Empty or irrelevant columns
+         - Few or no values
+         - Can be ignored
+
+      CRITICAL RULES:
+      - NEVER classify "占比" columns as VALUE
+      - NEVER classify "合计" columns as VALUE
+      - Only VALUE columns should be summed for calculations
+      - In Chinese P&L, columns often alternate: value, ratio, value, ratio...
+
+      Return classification as JSON:
+      ```json
+      {
+        "column_classifications": {
+          "0": {"type": "ACCOUNT_NAME", "header": "损益类别", "reason": "Contains account names"},
+          "1": {"type": "VALUE", "header": "1月", "reason": "January values, can be summed"},
+          "2": {"type": "RATIO", "header": "占比", "reason": "Percentage column, never sum"},
+          ...
+        },
+        "value_columns": [1, 3, 5, ...],
+        "ratio_columns": [2, 4, 6, ...],
+        "total_columns": [25],
+        "pattern_detected": "alternating_value_ratio"
+      }
+      ```
