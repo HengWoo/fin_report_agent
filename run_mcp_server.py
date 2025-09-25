@@ -36,10 +36,10 @@ async def main():
     from mcp import stdio_server
 
     async with stdio_server() as (read_stream, write_stream):
-        await mcp_server.get_server().run(
+        await mcp_server.server.run(
             read_stream,
             write_stream,
-            mcp_server.get_server().create_initialization_options()
+            mcp_server.server.create_initialization_options()
         )
 
 
