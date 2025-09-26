@@ -1,8 +1,8 @@
 """
-Restaurant-Specific Financial Analytics Engine
+Financial Analytics Engine
 
-This module provides comprehensive restaurant analytics by combining all analysis components
-into a unified, restaurant-focused analytical framework.
+This module provides comprehensive financial analytics by combining all analysis components
+into a unified analytical framework for general business financial data.
 """
 
 from typing import Dict, List, Optional, Any, Union, Tuple
@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class RestaurantPerformanceMetrics:
-    """Comprehensive restaurant performance metrics."""
+class BusinessPerformanceMetrics:
+    """Comprehensive business performance metrics."""
     # Financial health indicators
     financial_health_score: Decimal  # 0-100 overall health score
     profitability_grade: str  # A, B, C, D, F
@@ -32,13 +32,13 @@ class RestaurantPerformanceMetrics:
 
     # Key ratios
     prime_cost_ratio: Decimal
-    revenue_per_seat: Optional[Decimal]  # If seating capacity known
+    revenue_per_unit: Optional[Decimal]  # Revenue efficiency metric
     customer_acquisition_cost: Optional[Decimal]
 
     # Operational metrics
-    food_waste_indicator: Decimal  # Estimated from cost patterns
+    operational_efficiency_indicator: Decimal  # General efficiency measure
     staff_productivity_score: Decimal
-    menu_performance_score: Decimal
+    operational_performance_score: Decimal
 
     # Growth metrics
     revenue_growth_rate: Optional[Decimal]
@@ -52,15 +52,15 @@ class RestaurantPerformanceMetrics:
 
 
 @dataclass
-class RestaurantAnalysisReport:
-    """Complete restaurant analysis report."""
-    restaurant_name: str
+class FinancialAnalysisReport:
+    """Complete financial analysis report."""
+    business_name: str
     analysis_date: str
     period_analyzed: str
 
     # Core analysis results
-    kpis: RestaurantKPIs
-    performance_metrics: RestaurantPerformanceMetrics
+    kpis: RestaurantKPIs  # Will be renamed to BusinessKPIs in future
+    performance_metrics: BusinessPerformanceMetrics
     insights: InsightSummary
 
     # Executive summary
@@ -77,8 +77,8 @@ class RestaurantAnalysisReport:
         return asdict(self)
 
 
-class RestaurantAnalyticsEngine:
-    """Comprehensive analytics engine for restaurant financial analysis."""
+class FinancialAnalyticsEngine:
+    """Comprehensive analytics engine for general business financial analysis."""
 
     def __init__(self):
         self.data_transformer = DataTransformer()
@@ -87,37 +87,37 @@ class RestaurantAnalyticsEngine:
         self.comparative_analyzer = ComparativeAnalyzer()
         self.insights_generator = InsightsGenerator()
 
-        # Restaurant industry benchmarks
+        # General business industry benchmarks (configurable)
         self.industry_benchmarks = {
-            "quick_service": {
+            "service_business": {
                 "gross_margin": {"excellent": 0.70, "good": 0.60, "poor": 0.45},
-                "food_cost_ratio": {"excellent": 0.28, "good": 0.32, "poor": 0.40},
+                "operating_cost_ratio": {"excellent": 0.28, "good": 0.32, "poor": 0.40},
                 "labor_cost_ratio": {"excellent": 0.25, "good": 0.30, "poor": 0.40},
                 "prime_cost_ratio": {"excellent": 0.55, "good": 0.62, "poor": 0.75}
             },
-            "casual_dining": {
+            "retail_business": {
                 "gross_margin": {"excellent": 0.65, "good": 0.55, "poor": 0.40},
-                "food_cost_ratio": {"excellent": 0.30, "good": 0.35, "poor": 0.45},
+                "operating_cost_ratio": {"excellent": 0.30, "good": 0.35, "poor": 0.45},
                 "labor_cost_ratio": {"excellent": 0.28, "good": 0.32, "poor": 0.42},
                 "prime_cost_ratio": {"excellent": 0.58, "good": 0.67, "poor": 0.80}
             },
-            "fine_dining": {
+            "manufacturing": {
                 "gross_margin": {"excellent": 0.60, "good": 0.50, "poor": 0.35},
-                "food_cost_ratio": {"excellent": 0.32, "good": 0.38, "poor": 0.48},
+                "operating_cost_ratio": {"excellent": 0.32, "good": 0.38, "poor": 0.48},
                 "labor_cost_ratio": {"excellent": 0.35, "good": 0.40, "poor": 0.50},
                 "prime_cost_ratio": {"excellent": 0.67, "good": 0.78, "poor": 0.90}
             }
         }
 
-    def analyze_restaurant_excel(self, excel_path: str) -> RestaurantAnalysisReport:
+    def analyze_business_excel(self, excel_path: str) -> FinancialAnalysisReport:
         """
-        Perform comprehensive restaurant analysis from Excel file.
+        Perform comprehensive financial analysis from Excel file.
 
         Args:
-            excel_path: Path to restaurant financial Excel file
+            excel_path: Path to business financial Excel file
 
         Returns:
-            Complete restaurant analysis report
+            Complete financial analysis report
         """
         # Transform Excel data
         transformation_result = self.data_transformer.transform_excel_file(excel_path)
@@ -125,41 +125,41 @@ class RestaurantAnalyticsEngine:
         if not transformation_result.success:
             raise ValueError(f"Failed to process Excel file: {'; '.join(transformation_result.errors)}")
 
-        return self.analyze_restaurant_statement(
+        return self.analyze_business_statement(
             transformation_result.income_statement,
             validation_result=transformation_result.validation_result,
             quality_score=transformation_result.quality_score
         )
 
-    def analyze_restaurant_statement(
+    def analyze_business_statement(
         self,
         income_statement: IncomeStatement,
         historical_statements: Optional[List[IncomeStatement]] = None,
         peer_statements: Optional[List[IncomeStatement]] = None,
         validation_result: Optional[ValidationResult] = None,
         quality_score: Optional[DataQualityScore] = None,
-        restaurant_type: str = "casual_dining"
-    ) -> RestaurantAnalysisReport:
+        business_type: str = "service_business"
+    ) -> FinancialAnalysisReport:
         """
-        Perform comprehensive restaurant analysis.
+        Perform comprehensive business financial analysis.
 
         Args:
             income_statement: Current period financial statement
             historical_statements: Historical data for trend analysis
-            peer_statements: Peer restaurant data for comparison
+            peer_statements: Peer business data for comparison
             validation_result: Data validation results
             quality_score: Data quality assessment
-            restaurant_type: Type of restaurant for benchmarking
+            business_type: Type of business for benchmarking
 
         Returns:
-            Complete restaurant analysis report
+            Complete financial analysis report
         """
         # Calculate KPIs
         kpis = self.kpi_calculator.calculate_all_kpis(income_statement)
 
-        # Calculate restaurant performance metrics
+        # Calculate business performance metrics
         performance_metrics = self._calculate_performance_metrics(
-            income_statement, kpis, restaurant_type
+            income_statement, kpis, business_type
         )
 
         # Perform trend analysis if historical data available
@@ -198,10 +198,10 @@ class RestaurantAnalyticsEngine:
         action_plan = self._create_action_plan(insights, performance_metrics)
 
         # Build final report
-        restaurant_name = income_statement.restaurant_name or "Restaurant Analysis"
+        business_name = income_statement.restaurant_name or "Business Analysis"
 
-        return RestaurantAnalysisReport(
-            restaurant_name=restaurant_name,
+        return FinancialAnalysisReport(
+            business_name=business_name,
             analysis_date=datetime.now().strftime("%Y-%m-%d"),
             period_analyzed=income_statement.period.period_id,
             kpis=kpis,
@@ -218,43 +218,43 @@ class RestaurantAnalyticsEngine:
         self,
         statement: IncomeStatement,
         kpis: RestaurantKPIs,
-        restaurant_type: str
-    ) -> RestaurantPerformanceMetrics:
+        business_type: str
+    ) -> BusinessPerformanceMetrics:
         """Calculate comprehensive performance metrics."""
 
         # Calculate financial health score
-        health_score = self._calculate_financial_health_score(kpis, restaurant_type)
+        health_score = self._calculate_financial_health_score(kpis, business_type)
 
         # Calculate grades
         profitability_grade = self._calculate_grade(
             statement.metrics.gross_margin,
-            self.industry_benchmarks[restaurant_type]["gross_margin"]
+            self.industry_benchmarks[business_type]["gross_margin"]
         )
 
         efficiency_grade = self._calculate_efficiency_grade(kpis)
         cost_control_grade = self._calculate_cost_control_grade(kpis)
 
         # Calculate operational metrics
-        food_waste_indicator = self._estimate_food_waste(statement)
+        operational_efficiency = self._estimate_operational_efficiency(statement)
         staff_productivity = self._calculate_staff_productivity_score(statement, kpis)
-        menu_performance = self._calculate_menu_performance_score(statement)
+        operational_performance = self._calculate_operational_performance_score(statement)
 
         # Calculate risk indicators
         cash_flow_risk = self._assess_cash_flow_risk(statement)
         cost_inflation_risk = self._assess_cost_inflation_risk(statement)
         competitive_risk = self._assess_competitive_risk(statement, kpis)
 
-        return RestaurantPerformanceMetrics(
+        return BusinessPerformanceMetrics(
             financial_health_score=health_score,
             profitability_grade=profitability_grade,
             efficiency_grade=efficiency_grade,
             cost_control_grade=cost_control_grade,
             prime_cost_ratio=statement.metrics.prime_cost_ratio or Decimal("0"),
-            revenue_per_seat=None,  # Would need seating capacity data
+            revenue_per_unit=None,  # Would need unit data
             customer_acquisition_cost=None,  # Would need marketing spend data
-            food_waste_indicator=food_waste_indicator,
+            operational_efficiency_indicator=operational_efficiency,
             staff_productivity_score=staff_productivity,
-            menu_performance_score=menu_performance,
+            operational_performance_score=operational_performance,
             revenue_growth_rate=None,  # Would need historical data
             profit_growth_rate=None,
             customer_growth_rate=None,
@@ -263,7 +263,7 @@ class RestaurantAnalyticsEngine:
             competitive_risk=competitive_risk
         )
 
-    def _calculate_financial_health_score(self, kpis: RestaurantKPIs, restaurant_type: str) -> Decimal:
+    def _calculate_financial_health_score(self, kpis: RestaurantKPIs, business_type: str) -> Decimal:
         """Calculate overall financial health score (0-100)."""
         scores = []
         weights = []
@@ -272,7 +272,7 @@ class RestaurantAnalyticsEngine:
         profitability_metrics = kpis.profitability
         if "gross_profit_margin" in profitability_metrics:
             margin = profitability_metrics["gross_profit_margin"].value
-            benchmark = self.industry_benchmarks[restaurant_type]["gross_margin"]
+            benchmark = self.industry_benchmarks[business_type]["gross_margin"]
             score = self._score_against_benchmark(margin, benchmark, higher_better=True)
             scores.append(score)
             weights.append(0.4)
@@ -281,7 +281,7 @@ class RestaurantAnalyticsEngine:
         cost_metrics = kpis.cost_control
         if "prime_cost_percentage" in cost_metrics:
             prime_cost = cost_metrics["prime_cost_percentage"].value
-            benchmark = self.industry_benchmarks[restaurant_type]["prime_cost_ratio"]
+            benchmark = self.industry_benchmarks[business_type]["prime_cost_ratio"]
             score = self._score_against_benchmark(prime_cost, benchmark, higher_better=False)
             scores.append(score)
             weights.append(0.35)
@@ -422,19 +422,21 @@ class RestaurantAnalyticsEngine:
 
         return "C"
 
-    def _estimate_food_waste(self, statement: IncomeStatement) -> Decimal:
-        """Estimate food waste indicator based on cost patterns."""
-        # Simple estimation based on food cost efficiency
-        if statement.revenue.food_revenue > 0 and statement.costs.food_cost > 0:
-            food_cost_ratio = statement.costs.food_cost / statement.revenue.food_revenue
+    def _estimate_operational_efficiency(self, statement: IncomeStatement) -> Decimal:
+        """Estimate operational efficiency indicator based on cost patterns."""
+        # Simple estimation based on operational cost efficiency
+        if statement.revenue.total_revenue > 0 and statement.expenses.total_expenses > 0:
+            expense_ratio = statement.expenses.total_expenses / statement.revenue.total_revenue
 
-            # Higher cost ratio might indicate more waste
-            if food_cost_ratio > Decimal("0.4"):
-                return Decimal("0.8")  # High waste indicator
-            elif food_cost_ratio > Decimal("0.35"):
-                return Decimal("0.6")  # Medium waste
+            # Lower expense ratio indicates better efficiency
+            if expense_ratio < Decimal("0.3"):
+                return Decimal("0.9")  # High efficiency
+            elif expense_ratio < Decimal("0.5"):
+                return Decimal("0.7")  # Good efficiency
+            elif expense_ratio < Decimal("0.7"):
+                return Decimal("0.5")  # Average efficiency
             else:
-                return Decimal("0.3")  # Low waste
+                return Decimal("0.3")  # Low efficiency
 
         return Decimal("0.5")  # Average assumption
 
@@ -455,24 +457,26 @@ class RestaurantAnalyticsEngine:
 
         return Decimal("0.5")  # Default
 
-    def _calculate_menu_performance_score(self, statement: IncomeStatement) -> Decimal:
-        """Calculate menu performance score based on revenue mix."""
+    def _calculate_operational_performance_score(self, statement: IncomeStatement) -> Decimal:
+        """Calculate operational performance score based on revenue efficiency."""
         if statement.revenue.total_revenue <= 0:
             return Decimal("0.5")
 
-        # Calculate high-margin item mix
-        high_margin_revenue = statement.revenue.beverage_revenue + statement.revenue.dessert_revenue
-        high_margin_ratio = high_margin_revenue / statement.revenue.total_revenue
+        # Calculate performance based on revenue to cost efficiency
+        if statement.costs.total_costs > 0:
+            revenue_efficiency = statement.revenue.total_revenue / statement.costs.total_costs
 
-        # Score based on high-margin mix
-        if high_margin_ratio >= Decimal("0.25"):
-            return Decimal("0.9")
-        elif high_margin_ratio >= Decimal("0.15"):
-            return Decimal("0.7")
-        elif high_margin_ratio >= Decimal("0.10"):
-            return Decimal("0.5")
-        else:
-            return Decimal("0.3")
+            # Score based on revenue efficiency
+            if revenue_efficiency >= Decimal("3.0"):
+                return Decimal("0.9")
+            elif revenue_efficiency >= Decimal("2.0"):
+                return Decimal("0.7")
+            elif revenue_efficiency >= Decimal("1.5"):
+                return Decimal("0.5")
+            else:
+                return Decimal("0.3")
+
+        return Decimal("0.5")
 
     def _assess_cash_flow_risk(self, statement: IncomeStatement) -> str:
         """Assess cash flow risk level."""
@@ -514,7 +518,7 @@ class RestaurantAnalyticsEngine:
 
     def _create_executive_summary(
         self,
-        performance_metrics: RestaurantPerformanceMetrics,
+        performance_metrics: BusinessPerformanceMetrics,
         insights: InsightSummary,
         trend_analysis: Optional[TrendResult],
         competitive_analysis: Optional[ComparisonResult]
@@ -563,7 +567,7 @@ class RestaurantAnalyticsEngine:
 
         return summary
 
-    def _create_action_plan(self, insights: InsightSummary, performance_metrics: RestaurantPerformanceMetrics) -> List[Dict[str, Any]]:
+    def _create_action_plan(self, insights: InsightSummary, performance_metrics: BusinessPerformanceMetrics) -> List[Dict[str, Any]]:
         """Create prioritized action plan."""
         actions = []
 

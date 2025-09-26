@@ -9,7 +9,7 @@ import asyncio
 import logging
 import traceback
 import json
-from typing import Dict, Any, List, Optional, Callable, Union
+from typing import Dict, Any, List, Optional, Callable
 from enum import Enum
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -18,6 +18,7 @@ from pathlib import Path
 
 class ErrorSeverity(Enum):
     """Error severity levels."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -26,6 +27,7 @@ class ErrorSeverity(Enum):
 
 class ErrorCategory(Enum):
     """Error categories."""
+
     VALIDATION = "validation"
     PARSING = "parsing"
     ANALYSIS = "analysis"
@@ -39,6 +41,7 @@ class ErrorCategory(Enum):
 @dataclass
 class ErrorContext:
     """Context information for errors."""
+
     tool_name: Optional[str] = None
     file_path: Optional[str] = None
     user_input: Optional[Dict[str, Any]] = None
@@ -53,6 +56,7 @@ class ErrorContext:
 @dataclass
 class MCPError:
     """Structured error information."""
+
     error_id: str
     category: ErrorCategory
     severity: ErrorSeverity
@@ -91,14 +95,11 @@ class ErrorRecoveryManager:
             ErrorCategory.SYSTEM: self._recover_system_error,
             ErrorCategory.AUTHENTICATION: self._recover_auth_error,
             ErrorCategory.CONFIGURATION: self._recover_config_error,
-            ErrorCategory.DATA_CORRUPTION: self._recover_data_corruption_error
+            ErrorCategory.DATA_CORRUPTION: self._recover_data_corruption_error,
         }
 
     async def handle_error(
-        self,
-        error: Exception,
-        context: ErrorContext,
-        retry_count: int = 0
+        self, error: Exception, context: ErrorContext, retry_count: int = 0
     ) -> Dict[str, Any]:
         """
         Handle an error with appropriate recovery strategy.
@@ -115,14 +116,18 @@ class ErrorRecoveryManager:
         mcp_error = self._analyze_error(error, context)
 
         self.logger.error(f"Error occurred: {mcp_error.error_id}")
-        self.logger.error(f"Category: {mcp_error.category.value}, Severity: {mcp_error.severity.value}")
+        self.logger.error(
+            f"Category: {mcp_error.category.value}, Severity: {mcp_error.severity.value}"
+        )
         self.logger.error(f"Message: {mcp_error.message}")
 
         # Attempt recovery if the error is recoverable
         recovery_result = None
         if mcp_error.recoverable and retry_count < 3:
             try:
-                recovery_result = await self._attempt_recovery(mcp_error, context, retry_count)
+                recovery_result = await self._attempt_recovery(
+                    mcp_error, context, retry_count
+                )
             except Exception as recovery_error:
                 self.logger.error(f"Recovery failed: {str(recovery_error)}")
 
@@ -130,9 +135,11 @@ class ErrorRecoveryManager:
         response = {
             "error": mcp_error.to_dict(),
             "recovery_attempted": recovery_result is not None,
-            "recovery_successful": recovery_result.get("success", False) if recovery_result else False,
+            "recovery_successful": (
+                recovery_result.get("success", False) if recovery_result else False
+            ),
             "retry_count": retry_count,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         if recovery_result:
@@ -171,10 +178,12 @@ class ErrorRecoveryManager:
             details=traceback.format_exc(),
             context=context,
             suggested_actions=suggested_actions,
-            recoverable=recoverable
+            recoverable=recoverable,
         )
 
-    def _categorize_error(self, error: Exception, context: ErrorContext) -> ErrorCategory:
+    def _categorize_error(
+        self, error: Exception, context: ErrorContext
+    ) -> ErrorCategory:
         """Categorize an error based on type and context."""
         error_type = type(error).__name__
 
@@ -185,7 +194,10 @@ class ErrorRecoveryManager:
             return ErrorCategory.VALIDATION
         elif isinstance(error, (ConnectionError, TimeoutError)):
             return ErrorCategory.NETWORK
-        elif "authentication" in error_type.lower() or "unauthorized" in error_type.lower():
+        elif (
+            "authentication" in error_type.lower()
+            or "unauthorized" in error_type.lower()
+        ):
             return ErrorCategory.AUTHENTICATION
         elif "config" in error_type.lower():
             return ErrorCategory.CONFIGURATION
@@ -196,7 +208,9 @@ class ErrorRecoveryManager:
         else:
             return ErrorCategory.ANALYSIS
 
-    def _assess_severity(self, error: Exception, category: ErrorCategory, context: ErrorContext) -> ErrorSeverity:
+    def _assess_severity(
+        self, error: Exception, category: ErrorCategory, context: ErrorContext
+    ) -> ErrorSeverity:
         """Assess the severity of an error."""
         if isinstance(error, (MemoryError, SystemError)):
             return ErrorSeverity.CRITICAL
@@ -214,46 +228,60 @@ class ErrorRecoveryManager:
         actions = []
 
         if category == ErrorCategory.VALIDATION:
-            actions.extend([
-                "Check input data format and structure",
-                "Verify all required fields are present",
-                "Ensure data types match expected formats"
-            ])
+            actions.extend(
+                [
+                    "Check input data format and structure",
+                    "Verify all required fields are present",
+                    "Ensure data types match expected formats",
+                ]
+            )
         elif category == ErrorCategory.PARSING:
-            actions.extend([
-                "Verify file exists and is accessible",
-                "Check file format and extension",
-                "Ensure file is not corrupted or locked"
-            ])
+            actions.extend(
+                [
+                    "Verify file exists and is accessible",
+                    "Check file format and extension",
+                    "Ensure file is not corrupted or locked",
+                ]
+            )
         elif category == ErrorCategory.NETWORK:
-            actions.extend([
-                "Check network connectivity",
-                "Verify server endpoints are accessible",
-                "Retry the operation after a brief delay"
-            ])
+            actions.extend(
+                [
+                    "Check network connectivity",
+                    "Verify server endpoints are accessible",
+                    "Retry the operation after a brief delay",
+                ]
+            )
         elif category == ErrorCategory.AUTHENTICATION:
-            actions.extend([
-                "Verify authentication credentials",
-                "Check API key validity",
-                "Ensure proper permissions are set"
-            ])
+            actions.extend(
+                [
+                    "Verify authentication credentials",
+                    "Check API key validity",
+                    "Ensure proper permissions are set",
+                ]
+            )
         elif category == ErrorCategory.SYSTEM:
-            actions.extend([
-                "Check system resources (memory, disk space)",
-                "Restart the service if necessary",
-                "Contact system administrator"
-            ])
+            actions.extend(
+                [
+                    "Check system resources (memory, disk space)",
+                    "Restart the service if necessary",
+                    "Contact system administrator",
+                ]
+            )
 
         # Add general actions
-        actions.extend([
-            "Review error details and context",
-            "Check system logs for additional information",
-            "Contact support if issue persists"
-        ])
+        actions.extend(
+            [
+                "Review error details and context",
+                "Check system logs for additional information",
+                "Contact support if issue persists",
+            ]
+        )
 
         return actions
 
-    def _is_recoverable(self, error: Exception, category: ErrorCategory, severity: ErrorSeverity) -> bool:
+    def _is_recoverable(
+        self, error: Exception, category: ErrorCategory, severity: ErrorSeverity
+    ) -> bool:
         """Determine if an error is recoverable."""
         if severity == ErrorSeverity.CRITICAL:
             return False
@@ -294,10 +322,13 @@ class ErrorRecoveryManager:
                 return {
                     "success": True,
                     "method": "data_sanitization",
-                    "cleaned_data": cleaned_data
+                    "cleaned_data": cleaned_data,
                 }
             except Exception as e:
-                return {"success": False, "reason": f"Data sanitization failed: {str(e)}"}
+                return {
+                    "success": False,
+                    "reason": f"Data sanitization failed: {str(e)}",
+                }
 
         return {"success": False, "reason": "No recoverable data available"}
 
@@ -320,10 +351,13 @@ class ErrorRecoveryManager:
                 return {
                     "success": True,
                     "method": "alternative_encoding",
-                    "suggestion": "Try UTF-8 or GB2312 encoding"
+                    "suggestion": "Try UTF-8 or GB2312 encoding",
                 }
             except Exception as e:
-                return {"success": False, "reason": f"Alternative parsing failed: {str(e)}"}
+                return {
+                    "success": False,
+                    "reason": f"Alternative parsing failed: {str(e)}",
+                }
 
         return {"success": False, "reason": "No file path provided"}
 
@@ -337,24 +371,26 @@ class ErrorRecoveryManager:
         return {
             "success": True,
             "method": "simplified_analysis",
-            "suggestion": "Use basic analysis mode with reduced complexity"
+            "suggestion": "Use basic analysis mode with reduced complexity",
         }
 
     async def _recover_network_error(
         self, mcp_error: MCPError, context: ErrorContext, retry_count: int
     ) -> Dict[str, Any]:
         """Recover from network errors."""
-        self.logger.info(f"Attempting network error recovery (attempt {retry_count + 1})")
+        self.logger.info(
+            f"Attempting network error recovery (attempt {retry_count + 1})"
+        )
 
         # Wait before retry with exponential backoff
-        wait_time = min(2 ** retry_count, 30)  # Max 30 seconds
+        wait_time = min(2**retry_count, 30)  # Max 30 seconds
         await asyncio.sleep(wait_time)
 
         return {
             "success": True,
             "method": "retry_with_backoff",
             "wait_time": wait_time,
-            "suggestion": "Retry the operation"
+            "suggestion": "Retry the operation",
         }
 
     async def _recover_system_error(
@@ -365,12 +401,13 @@ class ErrorRecoveryManager:
 
         # Perform garbage collection
         import gc
+
         gc.collect()
 
         return {
             "success": True,
             "method": "resource_cleanup",
-            "suggestion": "Retry with reduced resource usage"
+            "suggestion": "Retry with reduced resource usage",
         }
 
     async def _recover_auth_error(
@@ -382,7 +419,7 @@ class ErrorRecoveryManager:
         return {
             "success": False,
             "reason": "Authentication errors require manual intervention",
-            "suggestion": "Check credentials and permissions"
+            "suggestion": "Check credentials and permissions",
         }
 
     async def _recover_config_error(
@@ -395,7 +432,7 @@ class ErrorRecoveryManager:
         return {
             "success": True,
             "method": "fallback_config",
-            "suggestion": "Using default configuration settings"
+            "suggestion": "Using default configuration settings",
         }
 
     async def _recover_data_corruption_error(
@@ -407,7 +444,7 @@ class ErrorRecoveryManager:
         return {
             "success": False,
             "reason": "Data corruption requires manual data repair",
-            "suggestion": "Please provide a clean data file"
+            "suggestion": "Please provide a clean data file",
         }
 
     def _sanitize_input_data(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -420,7 +457,7 @@ class ErrorRecoveryManager:
                 cleaned_value = value.strip()
                 # Convert to appropriate type if possible
                 try:
-                    if cleaned_value.replace('.', '').isdigit():
+                    if cleaned_value.replace(".", "").isdigit():
                         cleaned_value = float(cleaned_value)
                 except ValueError:
                     pass
@@ -444,7 +481,7 @@ class ErrorRecoveryManager:
             "file_path": context.file_path,
             "recovery_attempted": response.get("recovery_attempted", False),
             "recovery_successful": response.get("recovery_successful", False),
-            "timestamp": mcp_error.timestamp
+            "timestamp": mcp_error.timestamp,
         }
 
         # Log to file for monitoring systems
@@ -490,10 +527,14 @@ class CircuitBreaker:
                 raise Exception("Circuit breaker is open")
 
         try:
-            result = await func(*args, **kwargs) if asyncio.iscoroutinefunction(func) else func(*args, **kwargs)
+            result = (
+                await func(*args, **kwargs)
+                if asyncio.iscoroutinefunction(func)
+                else func(*args, **kwargs)
+            )
             self._on_success()
             return result
-        except Exception as e:
+        except Exception:
             self._on_failure()
             raise
 

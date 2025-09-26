@@ -19,11 +19,7 @@ from pathlib import Path
 
 
 def read_excel_region(
-    file_path: str,
-    start_row: int,
-    end_row: int,
-    start_col: int,
-    end_col: int
+    file_path: str, start_row: int, end_row: int, start_col: int, end_col: int
 ) -> List[List[Any]]:
     """
     Extract a rectangular region of cells from Excel.
@@ -45,14 +41,12 @@ def read_excel_region(
         # Returns 6 rows x 6 columns of raw data
     """
     df = pd.read_excel(file_path, header=None)
-    region = df.iloc[start_row:end_row+1, start_col:end_col+1]
+    region = df.iloc[start_row : end_row + 1, start_col : end_col + 1]
     return region.values.tolist()
 
 
 def search_in_excel(
-    file_path: str,
-    search_term: str,
-    case_sensitive: bool = False
+    file_path: str, search_term: str, case_sensitive: bool = False
 ) -> List[Tuple[int, int, Any]]:
     """
     Find all cells containing a search term.
@@ -116,7 +110,7 @@ def get_excel_info(file_path: str) -> Dict[str, Any]:
         "rows": len(df),
         "columns": len(df.columns),
         "sheets": excel_file.sheet_names,
-        "file_size_bytes": Path(file_path).stat().st_size
+        "file_size_bytes": Path(file_path).stat().st_size,
     }
 
 
@@ -155,14 +149,12 @@ def calculate(operation: str, values: List[float]) -> float:
     elif operation == "min":
         return min(clean_values)
     else:
-        raise ValueError(f"Unknown operation: {operation}. Use sum, average, max, or min")
+        raise ValueError(
+            f"Unknown operation: {operation}. Use sum, average, max, or min"
+        )
 
 
-def show_excel_visual(
-    file_path: str,
-    max_rows: int = 20,
-    max_cols: int = 10
-) -> str:
+def show_excel_visual(file_path: str, max_rows: int = 20, max_cols: int = 10) -> str:
     """
     Display Excel in a format Claude can read and understand.
 
@@ -193,7 +185,9 @@ def show_excel_visual(
 
     # Format as string
     output = f"Excel File: {Path(file_path).name}\n"
-    output += f"Showing first {len(display_df)} rows, {len(display_df.columns)} columns\n"
+    output += (
+        f"Showing first {len(display_df)} rows, {len(display_df.columns)} columns\n"
+    )
     output += "=" * 80 + "\n"
     output += display_df.to_string()
 
@@ -212,36 +206,34 @@ SIMPLE_TOOLS = {
             "start_row": "Starting row (0-indexed)",
             "end_row": "Ending row (inclusive)",
             "start_col": "Starting column (0-indexed)",
-            "end_col": "Ending column (inclusive)"
-        }
+            "end_col": "Ending column (inclusive)",
+        },
     },
     "search_in_excel": {
         "description": "Find all cells containing a search term. Returns locations and values.",
         "parameters": {
             "file_path": "Path to Excel file",
             "search_term": "Text to search for",
-            "case_sensitive": "Whether to match case (optional, default False)"
-        }
+            "case_sensitive": "Whether to match case (optional, default False)",
+        },
     },
     "get_excel_info": {
         "description": "Get basic Excel file structure: rows, columns, sheet names.",
-        "parameters": {
-            "file_path": "Path to Excel file"
-        }
+        "parameters": {"file_path": "Path to Excel file"},
     },
     "calculate": {
         "description": "Perform simple math: sum, average, max, min. Claude decides what to calculate.",
         "parameters": {
             "operation": "One of: sum, average, max, min",
-            "values": "List of numbers to operate on"
-        }
+            "values": "List of numbers to operate on",
+        },
     },
     "show_excel_visual": {
         "description": "Display Excel in readable format for Claude to analyze. Shows raw data with labels.",
         "parameters": {
             "file_path": "Path to Excel file",
             "max_rows": "Maximum rows to show (optional, default 20)",
-            "max_cols": "Maximum columns to show (optional, default 10)"
-        }
-    }
+            "max_cols": "Maximum columns to show (optional, default 10)",
+        },
+    },
 }

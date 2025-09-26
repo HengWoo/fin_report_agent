@@ -78,6 +78,8 @@ archive/
 *.md.backup
 temp_*
 .serena/
+CLAUDE.md
+CLAUDE_CODE_SETUP.md
 
 # Python cache
 *.pyc

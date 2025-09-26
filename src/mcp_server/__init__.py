@@ -6,14 +6,10 @@ for the restaurant financial analysis system, enabling integration with
 Claude Code and other AI systems.
 """
 
-from .server import RestaurantFinancialMCPServer
+from .server import FinancialAnalysisMCPServer
 from .tools import FinancialAnalysisTools
 from .config import MCPServerConfig
 
-__all__ = [
-    "RestaurantFinancialMCPServer",
-    "FinancialAnalysisTools",
-    "MCPServerConfig"
-]
+__all__ = ["FinancialAnalysisMCPServer", "FinancialAnalysisTools", "MCPServerConfig"]
 
 __version__ = "1.0.0"

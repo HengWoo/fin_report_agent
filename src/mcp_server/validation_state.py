@@ -13,18 +13,17 @@ Features:
 - Thread-safe operations
 """
 
-import json
 import logging
 import threading
 from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional, Set, Union
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, asdict, field
 from enum import Enum
-from pathlib import Path
 
 
 class ValidationStatus(Enum):
     """Validation status states."""
+
     PENDING = "pending"
     CONFIRMED = "confirmed"
     REJECTED = "rejected"
@@ -34,6 +33,7 @@ class ValidationStatus(Enum):
 @dataclass
 class ValidationAssumption:
     """Individual validation assumption."""
+
     key: str
     description: str
     value: Any
@@ -62,6 +62,7 @@ class ValidationAssumption:
 @dataclass
 class ValidationSession:
     """Validation session tracking user confirmations."""
+
     session_id: str
     file_path: str
     account_structure_confirmed: bool = False
@@ -79,10 +80,10 @@ class ValidationSession:
     def is_fully_validated(self) -> bool:
         """Check if all required validations are complete."""
         return (
-            self.account_structure_confirmed and
-            self.depreciation_periods_confirmed and
-            self.safe_accounts_confirmed and
-            all(assumption.is_valid() for assumption in self.assumptions.values())
+            self.account_structure_confirmed
+            and self.depreciation_periods_confirmed
+            and self.safe_accounts_confirmed
+            and all(assumption.is_valid() for assumption in self.assumptions.values())
         )
 
     def get_validation_summary(self) -> Dict[str, Any]:
@@ -95,15 +96,18 @@ class ValidationSession:
                 "account_structure": self.account_structure_confirmed,
                 "depreciation_periods": self.depreciation_periods_confirmed,
                 "safe_accounts": self.safe_accounts_confirmed,
-                "benchmark_preferences": self.benchmark_preferences_confirmed
+                "benchmark_preferences": self.benchmark_preferences_confirmed,
             },
             "assumptions_count": len(self.assumptions),
-            "valid_assumptions": sum(1 for a in self.assumptions.values() if a.is_valid()),
-            "last_updated": self.last_updated
+            "valid_assumptions": sum(
+                1 for a in self.assumptions.values() if a.is_valid()
+            ),
+            "last_updated": self.last_updated,
         }
 
-    def add_assumption(self, key: str, description: str, value: Any,
-                      expires_in_hours: int = 24) -> ValidationAssumption:
+    def add_assumption(
+        self, key: str, description: str, value: Any, expires_in_hours: int = 24
+    ) -> ValidationAssumption:
         """Add a new validation assumption."""
         expires_at = (datetime.now() + timedelta(hours=expires_in_hours)).isoformat()
 
@@ -112,7 +116,7 @@ class ValidationSession:
             description=description,
             value=value,
             status=ValidationStatus.PENDING,
-            expires_at=expires_at
+            expires_at=expires_at,
         )
 
         self.assumptions[key] = assumption
@@ -172,14 +176,13 @@ class ValidationStateManager:
         with self._lock:
             session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hash(file_path) % 10000:04d}"
 
-            session = ValidationSession(
-                session_id=session_id,
-                file_path=file_path
-            )
+            session = ValidationSession(session_id=session_id, file_path=file_path)
 
             self.sessions[session_id] = session
             self._file_to_session_cache[file_path] = session_id
-            self.logger.info(f"Created validation session: {session_id} for {file_path}")
+            self.logger.info(
+                f"Created validation session: {session_id} for {file_path}"
+            )
 
             return session
 
@@ -197,7 +200,8 @@ class ValidationStateManager:
 
             # Fallback to full search
             matching_sessions = [
-                session for session in self.sessions.values()
+                session
+                for session in self.sessions.values()
                 if session.file_path == file_path
             ]
 
@@ -223,7 +227,9 @@ class ValidationStateManager:
         session = self.get_session_for_file(file_path)
 
         if session is None:
-            return False, ["No validation session found. Must run validate_account_structure first."]
+            return False, [
+                "No validation session found. Must run validate_account_structure first."
+            ]
 
         if session.is_fully_validated():
             return True, []
@@ -242,17 +248,21 @@ class ValidationStateManager:
 
         # Check expired assumptions
         expired_assumptions = [
-            key for key, assumption in session.assumptions.items()
+            key
+            for key, assumption in session.assumptions.items()
             if not assumption.is_valid()
         ]
 
         if expired_assumptions:
-            missing.extend([f"Assumption expired: {key}" for key in expired_assumptions])
+            missing.extend(
+                [f"Assumption expired: {key}" for key in expired_assumptions]
+            )
 
         return False, missing
 
-    def confirm_account_structure(self, session_id: str,
-                                hierarchy_result: Dict[str, Any]) -> bool:
+    def confirm_account_structure(
+        self, session_id: str, hierarchy_result: Dict[str, Any]
+    ) -> bool:
         """Confirm account structure validation."""
         if session_id not in self.sessions:
             return False
@@ -262,14 +272,18 @@ class ValidationStateManager:
         session.last_updated = datetime.now().isoformat()
 
         # Add key assumptions about the hierarchy
-        assumption = session.add_assumption(
+        session.add_assumption(
             "hierarchy_structure",
             "Account hierarchy structure and parent-child relationships",
             {
                 "total_accounts": hierarchy_result.get("total_accounts", 0),
                 "safe_accounts": len(hierarchy_result.get("safe_accounts", [])),
-                "potential_double_counting": len(hierarchy_result.get("validation_flags", {}).get("potential_double_counting", []))
-            }
+                "potential_double_counting": len(
+                    hierarchy_result.get("validation_flags", {}).get(
+                        "potential_double_counting", []
+                    )
+                ),
+            },
         )
 
         # Auto-confirm the assumption since user is confirming the structure
@@ -278,7 +292,9 @@ class ValidationStateManager:
         self.logger.info(f"Account structure confirmed for session: {session_id}")
         return True
 
-    def confirm_depreciation_periods(self, session_id: str, periods: Dict[str, int]) -> bool:
+    def confirm_depreciation_periods(
+        self, session_id: str, periods: Dict[str, int]
+    ) -> bool:
         """Confirm depreciation periods."""
         if session_id not in self.sessions:
             return False
@@ -290,9 +306,7 @@ class ValidationStateManager:
         # Add depreciation assumptions
         for account, period in periods.items():
             session.add_assumption(
-                f"depreciation_{account}",
-                f"Depreciation period for {account}",
-                period
+                f"depreciation_{account}", f"Depreciation period for {account}", period
             )
             # Auto-confirm each depreciation assumption
             session.confirm_assumption(f"depreciation_{account}")
@@ -300,7 +314,9 @@ class ValidationStateManager:
         self.logger.info(f"Depreciation periods confirmed for session: {session_id}")
         return True
 
-    def confirm_safe_accounts(self, session_id: str, selected_accounts: List[str]) -> bool:
+    def confirm_safe_accounts(
+        self, session_id: str, selected_accounts: List[str]
+    ) -> bool:
         """Confirm safe accounts selection."""
         if session_id not in self.sessions:
             return False
@@ -313,7 +329,7 @@ class ValidationStateManager:
         session.add_assumption(
             "safe_accounts_selection",
             "Selected accounts for calculations (leaf accounts only)",
-            selected_accounts
+            selected_accounts,
         )
         # Auto-confirm the assumption
         session.confirm_assumption("safe_accounts_selection")
@@ -321,7 +337,9 @@ class ValidationStateManager:
         self.logger.info(f"Safe accounts confirmed for session: {session_id}")
         return True
 
-    def confirm_benchmark_preferences(self, session_id: str, benchmarks: Dict[str, Any]) -> bool:
+    def confirm_benchmark_preferences(
+        self, session_id: str, benchmarks: Dict[str, Any]
+    ) -> bool:
         """Confirm benchmark preferences."""
         if session_id not in self.sessions:
             return False
@@ -334,7 +352,7 @@ class ValidationStateManager:
         session.add_assumption(
             "benchmark_preferences",
             "Industry benchmark preferences and targets",
-            benchmarks
+            benchmarks,
         )
         # Auto-confirm the assumption
         session.confirm_assumption("benchmark_preferences")
@@ -349,8 +367,7 @@ class ValidationStateManager:
 
         session = self.sessions[session_id]
         return {
-            key: assumption.to_dict()
-            for key, assumption in session.assumptions.items()
+            key: assumption.to_dict() for key, assumption in session.assumptions.items()
         }
 
     def generate_validation_report(self, session_id: str) -> str:
@@ -382,9 +399,9 @@ class ValidationStateManager:
             status_icon = "✅" if assumption.is_valid() else "❌"
             report += f"- {status_icon} {assumption.description}: {assumption.value}\n"
 
-        if not summary['fully_validated']:
+        if not summary["fully_validated"]:
             can_proceed, missing = self.can_proceed_with_calculation(session.file_path)
-            report += f"\n**Missing Validations:**\n"
+            report += "\n**Missing Validations:**\n"
             for item in missing:
                 report += f"- ❌ {item}\n"
 
@@ -397,7 +414,8 @@ class ValidationStateManager:
             cutoff_time = current_time - timedelta(hours=self.session_timeout_hours)
 
             expired_sessions = [
-                session_id for session_id, session in self.sessions.items()
+                session_id
+                for session_id, session in self.sessions.items()
                 if datetime.fromisoformat(session.last_updated) < cutoff_time
             ]
 
@@ -415,7 +433,9 @@ class ValidationStateManager:
         """Get statistics about current sessions."""
         with self._lock:
             total_sessions = len(self.sessions)
-            fully_validated = sum(1 for s in self.sessions.values() if s.is_fully_validated())
+            fully_validated = sum(
+                1 for s in self.sessions.values() if s.is_fully_validated()
+            )
             total_assumptions = sum(len(s.assumptions) for s in self.sessions.values())
 
             return {
@@ -425,13 +445,19 @@ class ValidationStateManager:
                 "total_assumptions": total_assumptions,
                 "cache_size": len(self._file_to_session_cache),
                 "oldest_session": min(
-                    (datetime.fromisoformat(s.created_at) for s in self.sessions.values()),
-                    default=None
+                    (
+                        datetime.fromisoformat(s.created_at)
+                        for s in self.sessions.values()
+                    ),
+                    default=None,
                 ),
                 "newest_session": max(
-                    (datetime.fromisoformat(s.created_at) for s in self.sessions.values()),
-                    default=None
-                )
+                    (
+                        datetime.fromisoformat(s.created_at)
+                        for s in self.sessions.values()
+                    ),
+                    default=None,
+                ),
             }
 
     def export_session_state(self, session_id: str) -> Optional[Dict[str, Any]]:
@@ -440,10 +466,7 @@ class ValidationStateManager:
             return None
 
         session = self.sessions[session_id]
-        return {
-            "session": asdict(session),
-            "exported_at": datetime.now().isoformat()
-        }
+        return {"session": asdict(session), "exported_at": datetime.now().isoformat()}
 
     def import_session_state(self, session_data: Dict[str, Any]) -> bool:
         """Import session state from persistence."""

@@ -1,8 +1,8 @@
 """
-Restaurant-specific financial validation rules and engine.
+Financial validation rules and engine for general business analysis.
 
-This module implements validation rules specific to restaurant operations,
-including industry benchmarks and business logic validation.
+This module implements validation rules for general business operations,
+including configurable industry benchmarks and business logic validation.
 """
 
 from typing import Dict, List, Optional, Callable, Any, Tuple
@@ -39,40 +39,50 @@ class ValidationRule(ABC):
         pass
 
 
-class RestaurantMarginRule(ValidationRule):
-    """Validate restaurant profit margins against industry benchmarks."""
+class BusinessMarginRule(ValidationRule):
+    """Validate profit margins against industry benchmarks."""
 
-    def __init__(self):
+    def __init__(self, benchmarks: Dict[str, Dict[str, float]] = None):
         super().__init__(
             code="MARGIN_001",
-            description="Validate gross margins are within restaurant industry ranges",
+            description="Validate gross margins are within industry ranges",
             severity=ValidationSeverity.WARNING
         )
+
+        # Configurable benchmarks for different business types
+        self.benchmarks = benchmarks or {
+            "service": {"min": 0.45, "target": 0.65, "max": 0.85},
+            "retail": {"min": 0.25, "target": 0.45, "max": 0.75},
+            "manufacturing": {"min": 0.20, "target": 0.40, "max": 0.70}
+        }
 
     def validate(self, income_statement: IncomeStatement) -> List[ValidationIssue]:
         issues = []
         metrics = income_statement.metrics
 
-        # Gross margin should be 55-75% for most restaurants
-        if metrics.gross_margin < Decimal('0.45'):
+        # Use default service benchmarks if no specific type provided
+        benchmark = self.benchmarks.get("service", self.benchmarks["service"])
+
+        # Gross margin validation
+        if metrics.gross_margin < Decimal(str(benchmark["min"])):
             issues.append(ValidationIssue(
                 severity=ValidationSeverity.ERROR,
                 code=f"{self.code}_LOW_GROSS",
-                message=f"Gross margin {metrics.gross_margin:.1%} is critically low for restaurants",
+                message=f"Gross margin {metrics.gross_margin:.1%} is critically low",
                 field="gross_margin",
                 value=float(metrics.gross_margin),
                 suggestion="Review pricing strategy and cost controls"
             ))
-        elif metrics.gross_margin < Decimal('0.55'):
+        elif metrics.gross_margin < Decimal(str(benchmark["target"])):
             issues.append(ValidationIssue(
                 severity=ValidationSeverity.WARNING,
                 code=f"{self.code}_BELOW_BENCHMARK",
-                message=f"Gross margin {metrics.gross_margin:.1%} is below industry average (55-75%)",
+                message=f"Gross margin {metrics.gross_margin:.1%} is below target range",
                 field="gross_margin",
                 value=float(metrics.gross_margin),
-                suggestion="Consider optimizing menu pricing and ingredient costs"
+                suggestion="Consider optimizing pricing and cost structure"
             ))
-        elif metrics.gross_margin > Decimal('0.85'):
+        elif metrics.gross_margin > Decimal(str(benchmark["max"])):
             issues.append(ValidationIssue(
                 severity=ValidationSeverity.WARNING,
                 code=f"{self.code}_UNUSUALLY_HIGH",
@@ -85,124 +95,90 @@ class RestaurantMarginRule(ValidationRule):
         return issues
 
 
-class FoodCostRatioRule(ValidationRule):
-    """Validate food cost ratios."""
+class CostRatioRule(ValidationRule):
+    """Validate cost ratios against business standards."""
 
     def __init__(self):
         super().__init__(
             code="COST_001",
-            description="Validate food cost ratios against industry standards",
+            description="Validate cost ratios against business standards",
             severity=ValidationSeverity.WARNING
         )
 
     def validate(self, income_statement: IncomeStatement) -> List[ValidationIssue]:
         issues = []
-        metrics = income_statement.metrics
 
-        if metrics.food_cost_ratio is not None:
-            # Food cost should be 25-35% for most restaurants
-            if metrics.food_cost_ratio > Decimal('0.45'):
+        # Validate that total costs don't exceed revenue
+        if income_statement.costs.total_cogs > income_statement.revenue.total_revenue:
+            issues.append(ValidationIssue(
+                severity=ValidationSeverity.ERROR,
+                code=f"{self.code}_COSTS_EXCEED_REVENUE",
+                message="Total costs exceed total revenue",
+                field="total_cogs",
+                value=float(income_statement.costs.total_cogs),
+                suggestion="Review cost allocation and pricing strategy"
+            ))
+
+        # Check for reasonable cost ratios (configurable by business type)
+        if income_statement.revenue.total_revenue > 0:
+            cost_ratio = income_statement.costs.total_cogs / income_statement.revenue.total_revenue
+
+            if cost_ratio > Decimal('0.80'):
                 issues.append(ValidationIssue(
                     severity=ValidationSeverity.ERROR,
-                    code=f"{self.code}_HIGH_FOOD_COST",
-                    message=f"Food cost ratio {metrics.food_cost_ratio:.1%} is critically high",
-                    field="food_cost_ratio",
-                    value=float(metrics.food_cost_ratio),
-                    suggestion="Review portion control, waste management, and supplier costs"
+                    code=f"{self.code}_HIGH_COST_RATIO",
+                    message=f"Cost ratio {cost_ratio:.1%} is critically high",
+                    field="cost_ratio",
+                    value=float(cost_ratio),
+                    suggestion="Review cost management and operational efficiency"
                 ))
-            elif metrics.food_cost_ratio > Decimal('0.35'):
+            elif cost_ratio > Decimal('0.60'):
                 issues.append(ValidationIssue(
                     severity=ValidationSeverity.WARNING,
-                    code=f"{self.code}_ABOVE_BENCHMARK",
-                    message=f"Food cost ratio {metrics.food_cost_ratio:.1%} is above industry average (25-35%)",
-                    field="food_cost_ratio",
-                    value=float(metrics.food_cost_ratio),
-                    suggestion="Consider menu engineering and cost optimization"
-                ))
-            elif metrics.food_cost_ratio < Decimal('0.15'):
-                issues.append(ValidationIssue(
-                    severity=ValidationSeverity.WARNING,
-                    code=f"{self.code}_UNUSUALLY_LOW",
-                    message=f"Food cost ratio {metrics.food_cost_ratio:.1%} is unusually low",
-                    field="food_cost_ratio",
-                    value=float(metrics.food_cost_ratio),
-                    suggestion="Verify cost allocation and inventory valuation"
+                    code=f"{self.code}_ELEVATED_COST_RATIO",
+                    message=f"Cost ratio {cost_ratio:.1%} is elevated",
+                    field="cost_ratio",
+                    value=float(cost_ratio),
+                    suggestion="Monitor cost trends and optimization opportunities"
                 ))
 
         return issues
 
 
-class LaborCostRatioRule(ValidationRule):
-    """Validate labor cost ratios."""
+class OperatingExpenseRule(ValidationRule):
+    """Validate operating expense ratios."""
 
     def __init__(self):
         super().__init__(
-            code="LABOR_001",
-            description="Validate labor cost ratios against industry standards",
+            code="OPEX_001",
+            description="Validate operating expense ratios",
             severity=ValidationSeverity.WARNING
         )
 
     def validate(self, income_statement: IncomeStatement) -> List[ValidationIssue]:
         issues = []
-        metrics = income_statement.metrics
 
-        if metrics.labor_cost_ratio is not None:
-            # Labor cost should be 20-30% for most restaurants
-            if metrics.labor_cost_ratio > Decimal('0.40'):
+        if income_statement.revenue.total_revenue > 0:
+            opex_ratio = income_statement.expenses.total_operating_expenses / income_statement.revenue.total_revenue
+
+            # Operating expenses shouldn't exceed reasonable thresholds
+            if opex_ratio > Decimal('0.70'):
                 issues.append(ValidationIssue(
                     severity=ValidationSeverity.ERROR,
-                    code=f"{self.code}_HIGH_LABOR_COST",
-                    message=f"Labor cost ratio {metrics.labor_cost_ratio:.1%} is critically high",
-                    field="labor_cost_ratio",
-                    value=float(metrics.labor_cost_ratio),
-                    suggestion="Review staffing levels and labor efficiency"
+                    code=f"{self.code}_HIGH_OPEX",
+                    message=f"Operating expense ratio {opex_ratio:.1%} is critically high",
+                    field="operating_expense_ratio",
+                    value=float(opex_ratio),
+                    suggestion="Review operational efficiency and expense management"
                 ))
-            elif metrics.labor_cost_ratio > Decimal('0.30'):
+            elif opex_ratio > Decimal('0.50'):
                 issues.append(ValidationIssue(
                     severity=ValidationSeverity.WARNING,
-                    code=f"{self.code}_ABOVE_BENCHMARK",
-                    message=f"Labor cost ratio {metrics.labor_cost_ratio:.1%} is above industry average (20-30%)",
-                    field="labor_cost_ratio",
-                    value=float(metrics.labor_cost_ratio),
-                    suggestion="Consider optimizing schedules and productivity"
-                ))
-
-        return issues
-
-
-class PrimeCostRule(ValidationRule):
-    """Validate prime cost (COGS + Labor) ratios."""
-
-    def __init__(self):
-        super().__init__(
-            code="PRIME_001",
-            description="Validate prime cost ratios for operational efficiency",
-            severity=ValidationSeverity.WARNING
-        )
-
-    def validate(self, income_statement: IncomeStatement) -> List[ValidationIssue]:
-        issues = []
-        metrics = income_statement.metrics
-
-        if metrics.prime_cost_ratio is not None:
-            # Prime cost should be 50-65% for healthy restaurants
-            if metrics.prime_cost_ratio > Decimal('0.75'):
-                issues.append(ValidationIssue(
-                    severity=ValidationSeverity.ERROR,
-                    code=f"{self.code}_HIGH_PRIME_COST",
-                    message=f"Prime cost ratio {metrics.prime_cost_ratio:.1%} is critically high",
-                    field="prime_cost_ratio",
-                    value=float(metrics.prime_cost_ratio),
-                    suggestion="Urgent review of both food costs and labor efficiency needed"
-                ))
-            elif metrics.prime_cost_ratio > Decimal('0.65'):
-                issues.append(ValidationIssue(
-                    severity=ValidationSeverity.WARNING,
-                    code=f"{self.code}_ABOVE_BENCHMARK",
-                    message=f"Prime cost ratio {metrics.prime_cost_ratio:.1%} is above healthy range (50-65%)",
-                    field="prime_cost_ratio",
-                    value=float(metrics.prime_cost_ratio),
-                    suggestion="Focus on optimizing both food costs and labor costs"
+                    code=f"{self.code}_ELEVATED_OPEX",
+                    message=f"Operating expense ratio {opex_ratio:.1%} is elevated",
+                    field="operating_expense_ratio",
+                    value=float(opex_ratio),
+                    suggestion="Monitor expense trends and identify cost reduction opportunities"
                 ))
 
         return issues
@@ -246,23 +222,21 @@ class RevenueConsistencyRule(ValidationRule):
             ))
 
         # Check for negative revenues (except discounts)
-        if revenue.food_revenue < 0:
-            issues.append(ValidationIssue(
-                severity=ValidationSeverity.ERROR,
-                code=f"{self.code}_NEGATIVE_FOOD_REV",
-                message="Food revenue cannot be negative",
-                field="food_revenue",
-                value=float(revenue.food_revenue)
-            ))
+        negative_revenue_checks = [
+            ("food_revenue", revenue.food_revenue),
+            ("beverage_revenue", revenue.beverage_revenue),
+            ("other_revenue", revenue.other_revenue)
+        ]
 
-        if revenue.beverage_revenue < 0:
-            issues.append(ValidationIssue(
-                severity=ValidationSeverity.ERROR,
-                code=f"{self.code}_NEGATIVE_BEV_REV",
-                message="Beverage revenue cannot be negative",
-                field="beverage_revenue",
-                value=float(revenue.beverage_revenue)
-            ))
+        for field_name, value in negative_revenue_checks:
+            if value < 0:
+                issues.append(ValidationIssue(
+                    severity=ValidationSeverity.ERROR,
+                    code=f"{self.code}_NEGATIVE_{field_name.upper()}",
+                    message=f"{field_name.replace('_', ' ').title()} cannot be negative",
+                    field=field_name,
+                    value=float(value)
+                ))
 
         # Check discount reasonableness
         if revenue.discounts < 0 and abs(revenue.discounts) > revenue.total_revenue * Decimal('0.3'):
@@ -312,30 +286,38 @@ class BusinessLogicRule(ValidationRule):
                 suggestion="Verify cost allocation and inventory calculations"
             ))
 
-        # Check for reasonable expense ratios
-        if (income_statement.expenses.total_operating_expenses >
-            income_statement.revenue.total_revenue * Decimal('0.8')):
+        # Check for reasonable total expense ratios
+        total_costs_and_expenses = (income_statement.costs.total_cogs +
+                                  income_statement.expenses.total_operating_expenses)
+
+        if (total_costs_and_expenses > income_statement.revenue.total_revenue * Decimal('0.95')):
             issues.append(ValidationIssue(
                 severity=ValidationSeverity.WARNING,
-                code=f"{self.code}_HIGH_EXPENSES",
-                message="Operating expenses exceed 80% of revenue",
-                field="total_operating_expenses",
-                value=float(income_statement.expenses.total_operating_expenses),
-                suggestion="Review expense management and operational efficiency"
+                code=f"{self.code}_HIGH_TOTAL_COSTS",
+                message="Total costs and expenses exceed 95% of revenue",
+                field="total_costs_and_expenses",
+                value=float(total_costs_and_expenses),
+                suggestion="Review overall cost structure and operational efficiency"
             ))
 
         return issues
 
 
-class RestaurantFinancialValidator:
-    """Main validator for restaurant financial data."""
+class FinancialValidator:
+    """Main validator for general business financial data."""
 
-    def __init__(self):
+    def __init__(self, business_type: str = "service"):
+        """
+        Initialize validator with business type-specific benchmarks.
+
+        Args:
+            business_type: Type of business (service, retail, manufacturing)
+        """
+        self.business_type = business_type
         self.rules = [
-            RestaurantMarginRule(),
-            FoodCostRatioRule(),
-            LaborCostRatioRule(),
-            PrimeCostRule(),
+            BusinessMarginRule(),
+            CostRatioRule(),
+            OperatingExpenseRule(),
             RevenueConsistencyRule(),
             BusinessLogicRule()
         ]
@@ -382,8 +364,8 @@ class RestaurantFinancialValidator:
 class ValidationEngine:
     """Advanced validation engine with configurable rules and scoring."""
 
-    def __init__(self):
-        self.validator = RestaurantFinancialValidator()
+    def __init__(self, business_type: str = "service"):
+        self.validator = FinancialValidator(business_type)
 
     def validate_with_quality_score(self, income_statement: IncomeStatement) -> Tuple[ValidationResult, DataQualityScore]:
         """
@@ -441,21 +423,19 @@ class ValidationEngine:
 
     def _calculate_completeness_score(self, income_statement: IncomeStatement) -> float:
         """Calculate data completeness score."""
-        total_fields = 20  # Total expected key fields
+        total_fields = 15  # Total expected key fields
         filled_fields = 0
 
         # Check revenue fields
         if income_statement.revenue.total_revenue > 0:
             filled_fields += 1
-        if income_statement.revenue.food_revenue > 0:
+        if income_statement.revenue.food_revenue >= 0:
             filled_fields += 1
-        if income_statement.revenue.beverage_revenue >= 0:
+        if income_statement.revenue.other_revenue >= 0:
             filled_fields += 1
 
         # Check cost fields
         if income_statement.costs.total_cogs >= 0:
-            filled_fields += 1
-        if income_statement.costs.food_cost >= 0:
             filled_fields += 1
 
         # Check expense fields
@@ -463,13 +443,15 @@ class ValidationEngine:
             filled_fields += 1
         if income_statement.expenses.labor_cost >= 0:
             filled_fields += 1
-        if income_statement.expenses.rent_expense >= 0:
-            filled_fields += 1
 
         # Check calculated metrics
         if income_statement.metrics.gross_profit is not None:
             filled_fields += 1
         if income_statement.metrics.gross_margin is not None:
+            filled_fields += 1
+        if income_statement.metrics.operating_profit is not None:
+            filled_fields += 1
+        if income_statement.metrics.operating_margin is not None:
             filled_fields += 1
 
         return min(filled_fields / total_fields, 1.0)
@@ -529,15 +511,9 @@ class ValidationEngine:
         """Calculate revenue data quality."""
         score = 1.0
 
-        # Penalize for missing revenue breakdown
-        if revenue.food_revenue == 0 and revenue.total_revenue > 0:
-            score -= 0.2
-
-        # Penalize for unrealistic revenue mix
-        if revenue.total_revenue > 0:
-            food_ratio = revenue.food_revenue / revenue.total_revenue
-            if food_ratio < Decimal('0.5') or food_ratio > Decimal('0.95'):
-                score -= 0.1
+        # Penalize if total revenue is missing but components exist
+        if revenue.total_revenue == 0 and (revenue.food_revenue > 0 or revenue.other_revenue > 0):
+            score -= 0.3
 
         return max(0.0, score)
 
@@ -545,9 +521,9 @@ class ValidationEngine:
         """Calculate cost data quality."""
         score = 1.0
 
-        # Penalize for missing cost breakdown
-        if costs.food_cost == 0 and costs.total_cogs > 0:
-            score -= 0.2
+        # Check for reasonable cost structure
+        if costs.total_cogs < 0:
+            score -= 0.5
 
         return max(0.0, score)
 
@@ -555,9 +531,9 @@ class ValidationEngine:
         """Calculate expense data quality."""
         score = 1.0
 
-        # Penalize for missing labor cost
-        if expenses.labor_cost == 0 and expenses.total_operating_expenses > 0:
-            score -= 0.2
+        # Check for negative operating expenses
+        if expenses.total_operating_expenses < 0:
+            score -= 0.3
 
         return max(0.0, score)
 
@@ -565,12 +541,12 @@ class ValidationEngine:
         """Identify missing critical fields."""
         missing = []
 
-        if income_statement.revenue.food_revenue == 0:
-            missing.append("food_revenue")
-        if income_statement.costs.food_cost == 0:
-            missing.append("food_cost")
-        if income_statement.expenses.labor_cost == 0:
-            missing.append("labor_cost")
+        if income_statement.revenue.total_revenue <= 0:
+            missing.append("total_revenue")
+        if income_statement.costs.total_cogs < 0:
+            missing.append("total_cogs")
+        if income_statement.metrics.gross_profit is None:
+            missing.append("gross_profit")
 
         return missing
 
@@ -579,13 +555,13 @@ class ValidationEngine:
         suspicious = []
 
         # Unusually high margins
-        if income_statement.metrics.gross_margin > Decimal('0.9'):
+        if income_statement.metrics.gross_margin and income_statement.metrics.gross_margin > Decimal('0.95'):
             suspicious.append(f"Very high gross margin: {income_statement.metrics.gross_margin:.1%}")
 
         # Unusually low costs
         if income_statement.revenue.total_revenue > 0:
             cost_ratio = income_statement.costs.total_cogs / income_statement.revenue.total_revenue
-            if cost_ratio < Decimal('0.1'):
+            if cost_ratio < Decimal('0.05'):
                 suspicious.append(f"Very low cost ratio: {cost_ratio:.1%}")
 
         return suspicious
