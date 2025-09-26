@@ -11,9 +11,9 @@ from pathlib import Path
 from datetime import datetime, date
 
 from .config import MCPServerConfig, ToolConfig, DEFAULT_TOOL_CONFIGS
-from ..analyzers.restaurant_analytics import RestaurantAnalyticsEngine
+from ..analyzers.financial_analytics import FinancialAnalyticsEngine
 from ..parsers.chinese_excel_parser import ChineseExcelParser
-from ..validators.restaurant_validator import RestaurantFinancialValidator
+from ..validators.financial_validator import FinancialValidator
 from ..models.financial_data import (
     IncomeStatement,
     FinancialPeriod,

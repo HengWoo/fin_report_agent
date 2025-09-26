@@ -13,7 +13,7 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from src.mcp_server.server import RestaurantFinancialMCPServer
+from src.mcp_server.server import FinancialAnalysisMCPServer
 from src.mcp_server.config import MCPServerConfig
 
 
@@ -30,7 +30,7 @@ async def main():
     )
 
     # Initialize server
-    mcp_server = RestaurantFinancialMCPServer(config)
+    mcp_server = FinancialAnalysisMCPServer(config)
 
     # Get the underlying MCP server and run with stdio transport
     from mcp import stdio_server

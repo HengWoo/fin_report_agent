@@ -47,7 +47,6 @@ class HandlerRouter:
             "calculate_kpis": self.legacy_analysis.handle_calculate_kpis,
             "analyze_trends": self.legacy_analysis.handle_analyze_trends,
             "generate_insights": self.legacy_analysis.handle_generate_insights,
-            "comprehensive_analysis": self.complex_analysis.handle_comprehensive_analysis,
             "adaptive_financial_analysis": self.complex_analysis.handle_adaptive_financial_analysis,
             "validate_account_structure": self.complex_analysis.handle_validate_account_structure,
         }

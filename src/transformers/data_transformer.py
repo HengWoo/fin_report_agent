@@ -21,7 +21,7 @@ from ..models.financial_data import (
     ValidationResult,
     DataQualityScore
 )
-from ..validators.restaurant_validator import ValidationEngine
+from ..validators.financial_validator import ValidationEngine
 from ..parsers.chinese_excel_parser import ChineseExcelParser
 
 logger = logging.getLogger(__name__)

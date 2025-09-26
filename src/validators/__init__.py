@@ -1,13 +1,13 @@
 """Financial Data Validators Package"""
 
-from .restaurant_validator import (
-    RestaurantFinancialValidator,
+from .financial_validator import (
+    FinancialValidator,
     ValidationEngine,
     ValidationRule
 )
 
 __all__ = [
-    "RestaurantFinancialValidator",
+    "FinancialValidator",
     "ValidationEngine",
     "ValidationRule"
 ]

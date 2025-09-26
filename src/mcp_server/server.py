@@ -1,7 +1,7 @@
 """
-Restaurant Financial Analysis MCP Server (Refactored)
+Financial Analysis MCP Server (Refactored)
 
-Streamlined MCP server using modular handler architecture.
+Streamlined MCP server using modular handler architecture for general financial analysis.
 """
 
 import logging
@@ -18,24 +18,24 @@ from .validation_state import validation_state_manager
 from .financial_memory import financial_memory_manager
 from .financial_navigator import financial_navigator
 from .thinking_tools import thinking_tools
-from ..analyzers.restaurant_analytics import RestaurantAnalyticsEngine
+from ..analyzers.financial_analytics import FinancialAnalyticsEngine
 from ..analyzers.adaptive_financial_analyzer import AdaptiveFinancialAnalyzer
 from ..parsers.account_hierarchy_parser import AccountHierarchyParser
-from ..validators.restaurant_validator import RestaurantFinancialValidator
+from ..validators.financial_validator import FinancialValidator
 
 
-class RestaurantFinancialMCPServer:
-    """MCP Server for Restaurant Financial Analysis."""
+class FinancialAnalysisMCPServer:
+    """MCP Server for General Financial Analysis."""
 
     def __init__(self, config: Optional[MCPServerConfig] = None):
         """Initialize the MCP server."""
         self.config = config or MCPServerConfig.from_env()
         self.server = Server(self.config.server_name)
 
-        self.analytics_engine = RestaurantAnalyticsEngine()
+        self.analytics_engine = FinancialAnalyticsEngine()
         self.adaptive_analyzer = AdaptiveFinancialAnalyzer()
         self.hierarchy_parser = AccountHierarchyParser()
-        self.validator = RestaurantFinancialValidator()
+        self.validator = FinancialValidator()
 
         self._setup_logging()
 

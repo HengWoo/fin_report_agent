@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A production-ready financial reporting agent that processes Chinese restaurant Excel files and generates bilingual business analysis. Built using Claude Code SDK with MCP (Model Context Protocol) server integration for AI-powered analysis.
+A production-ready financial reporting agent that processes Excel files and generates bilingual business analysis for any type of business. Built using Claude Code SDK with MCP (Model Context Protocol) server integration for AI-powered analysis.
 
 **Package Name:** `fin-report-agent`
 **MCP Server Name:** `fin-report-agent`
@@ -19,10 +19,12 @@ A production-ready financial reporting agent that processes Chinese restaurant E
 - Persistent memory system for session context and insights
 - Progressive analysis refinement across conversation turns
 
-**✅ Complete Renaming & Branding (2025-09-24):**
-- Unified all names to `fin-report-agent` (was `restaurant-mcp`, `restaurant-financial-analysis`)
-- Updated CLI commands, MCP server name, package name, and all documentation
-- Consistent naming across Claude Code and Claude Desktop
+**✅ Complete Architecture Optimization (2025-09-26):**
+- Reduced tool count from 22 to 15 tools (32% reduction)
+- Removed restaurant-specific legacy components
+- Renamed server to `FinancialAnalysisMCPServer` (general purpose)
+- Updated installation to use `uvx --from git+...` pattern
+- Consolidated analysis tools for better efficiency
 
 **✅ Claude Code Support Added:**
 - One-command installation: `claude mcp add fin-report-agent -- uvx ...`
@@ -101,24 +103,24 @@ Chinese Excel → ChineseExcelParser → Pydantic Models → Restaurant Analytic
 ### Key Components
 
 **MCP Server (`src/mcp_server/server.py`)**
-- `RestaurantFinancialMCPServer`: Main server providing 6 financial analysis tools
-- Tools: parse_excel, validate_financial_data, calculate_kpis, analyze_trends, generate_insights, comprehensive_analysis
+- `FinancialAnalysisMCPServer`: Main server providing 16 optimized financial analysis tools
+- Tool categories: Simple (5), Navigation (3), Thinking (3), Memory (3), Complex (2)
 - Integrates with Claude Code via Model Context Protocol
 
 **Chinese Excel Parser (`src/parsers/chinese_excel_parser.py`)**
-- Parses Chinese restaurant income statements with multi-period data
+- Parses Chinese financial statements with multi-period data
 - Maps Chinese financial terms (营业收入, 食品成本, etc.) to standardized English equivalents
 - Handles complex Excel layouts and header detection
 
-**Restaurant Analytics (`src/analyzers/restaurant_analytics.py`)**
-- Calculates restaurant-specific KPIs (food cost %, labor cost %, prime cost)
-- Industry benchmarking (food cost 28-35%, labor 25-35%, prime cost <60%)
+**Financial Analytics (`src/analyzers/financial_analytics.py`)**
+- Calculates business-specific KPIs and performance metrics
+- Configurable industry benchmarking for different business types
 - Multi-period trend analysis and insights generation
 
 **Financial Data Models (`src/models/financial_data.py`)**
 - Pydantic V2 models for type-safe financial data handling
 - `IncomeStatement`: Main structure with revenue, costs, expenses, metrics
-- Comprehensive validation rules for restaurant financial data
+- Comprehensive validation rules for general business financial data
 
 ### Bilingual Support Architecture
 
@@ -270,20 +272,30 @@ fin-report-agent start-server      # Start MCP server (stdio/http)
 
 ### MCP Server Tools Available to Claude
 
-**🎯 Simple Tools (Recommended) - Claude-Driven Intelligence:**
+**🎯 Simple Tools (5) - Claude-Driven Intelligence:**
 1. **get_excel_info**: Get basic Excel file structure (rows, columns, sheets)
 2. **show_excel_visual**: Display Excel data in readable format for Claude to analyze
 3. **search_in_excel**: Find cells containing specific terms
 4. **read_excel_region**: Extract rectangular regions of cells (raw data, no interpretation)
 5. **calculate**: Simple math operations (sum, average, max, min)
 
-**🔧 Complex Tools (Legacy) - For Compatibility:**
-1. **comprehensive_analysis**: Complete Excel → insights pipeline
-2. **parse_excel**: Parse Chinese restaurant Excel files
-3. **calculate_kpis**: Calculate restaurant financial metrics
-4. **analyze_trends**: Multi-period performance analysis
-5. **validate_financial_data**: Validate against industry standards
-6. **generate_insights**: Strategic business recommendations
+**🧭 Navigation Tools (3) - LSP-like Financial Navigation:**
+6. **find_account**: Search financial accounts by name pattern
+7. **get_financial_overview**: High-level financial structure overview
+8. **get_account_context**: Get account with parent/children context
+
+**🤔 Thinking Tools (3) - Reflection & Validation:**
+9. **think_about_financial_data**: Assess data sufficiency for analysis
+10. **think_about_analysis_completeness**: Check analysis completeness
+11. **think_about_assumptions**: Validate assumptions against best practices
+
+**💾 Memory Tools (3) - Session Management:**
+12. **save_analysis_insight**: Store insights for future reference
+13. **get_session_context**: View session history and progress
+14. **write_memory_note**: Document patterns and knowledge
+
+**🔧 Validation Tools (1) - Structure Validation:**
+15. **validate_account_structure**: MANDATORY validation before calculations
 
 ### Usage Patterns
 
@@ -293,13 +305,13 @@ The system now uses **simple tools + Claude's intelligence** instead of complex 
 
 **Example - Natural Language Analysis:**
 ```
-User: "Claude，请分析 @野百灵餐厅财务报表.xlsx"
+User: "Claude, please analyze @business-financial-report.xlsx"
 
 Claude's Workflow:
 1. get_excel_info() → Understands file structure (139 rows, 28 columns)
 2. show_excel_visual() → Examines layout, identifies column headers
-3. search_in_excel("合计") → Discovers subtotal column at Col 25
-4. search_in_excel("营业收入") → Finds revenue accounts
+3. search_in_excel("Total") → Discovers subtotal column locations
+4. search_in_excel("Revenue") → Finds revenue accounts
 5. read_excel_region() → Extracts specific data intelligently
 6. calculate() → Verifies calculations transparently
 7. Generates comprehensive analysis with full reasoning visible
@@ -308,25 +320,29 @@ Claude's Workflow:
 **Key Advantages:**
 - ✅ **Transparent Reasoning**: Every decision visible to user
 - ✅ **Flexible**: Works with ANY Excel format (not hardcoded)
-- ✅ **Accurate**: Avoids double-counting errors (e.g., prevented ¥124,274 error)
+- ✅ **Accurate**: Avoids double-counting errors through intelligent validation
 - ✅ **Explainable**: User can follow Claude's step-by-step analysis
-- ✅ **Simple**: ~150 lines of tool code vs 3000+ lines of complex parsers
+- ✅ **Simple**: 16 focused tools vs complex legacy parsers
+- ✅ **Multi-turn Intelligence**: Progressive refinement across conversation turns
 
 **Real-World Success:**
-- Successfully analyzed 野百灵餐厅 (Mianyang branch) 5-8月财务报表
-- Correctly identified ¥73,906.01 (not ¥198,180.28) by intelligently recognizing subtotal columns
+- Successfully processes various business financial reports
+- Intelligently recognizes different Excel structures and layouts
 - Generated comprehensive bilingual analysis covering revenue, costs, expenses, and strategic insights
+- Provides context-aware recommendations based on business type
 
-**Traditional Queries Still Supported:**
-- "Analyze my restaurant's profitability compared to industry standards"
-- "What are my biggest cost problems and how can I save money?"
-- "请分析我的餐厅财务数据" (Chinese analysis requests)
+**Traditional Queries Supported:**
+- "Analyze my business profitability compared to industry standards"
+- "What are my biggest cost problems and optimization opportunities?"
+- "请分析我的财务数据" (Chinese analysis requests)
+- "Compare performance across multiple periods"
 
 **File Processing:**
 - Place Excel files in project directory
 - Reference by filename in Claude queries (@filename)
-- Claude intelligently handles Chinese financial terminology
+- Claude intelligently handles multilingual financial terminology (Chinese/English)
 - No pre-configuration needed - Claude explores and understands structure
+- Supports various business types with configurable industry benchmarks
 
 ## 📋 Financial Analysis Validation Workflow
 
