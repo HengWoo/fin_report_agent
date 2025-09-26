@@ -1,10 +1,10 @@
-# Restaurant Financial Analysis Agent
+# Financial Analysis Agent
 
-A production-ready financial reporting agent that processes Chinese restaurant Excel files and generates bilingual business analysis using **simple tools + Claude's intelligence**.
+A production-ready financial reporting agent that processes Excel files and generates bilingual business analysis for any type of business using **transparent tools + Claude's intelligence**.
 
-## 🎯 Philosophy: Simple Tools + Claude Intelligence
+## 🎯 Philosophy: Transparent Tools + Claude Intelligence
 
-This system uses **5 simple tools (~150 lines)** that return raw data to Claude, who then intelligently analyzes it. No complex parsers, no hardcoded logic - just transparent, explainable analysis.
+This system uses **15 specialized tools** organized into 5 categories that work transparently with Claude for intelligent financial analysis. No black-box automation - every step is visible and explainable.
 
 ### Why This Approach?
 
@@ -12,7 +12,7 @@ This system uses **5 simple tools (~150 lines)** that return raw data to Claude,
 - ✅ **Flexible**: Works with ANY Excel format
 - ✅ **Accurate**: Prevents double-counting errors (e.g., saved ¥124,274 in our test)
 - ✅ **Explainable**: Users can follow Claude's step-by-step reasoning
-- ✅ **Maintainable**: 150 lines vs 3000+ lines of complex parsers
+- ✅ **Maintainable**: Clean, modular architecture with organized tool categories
 
 ## 🚀 Quick Start (One Command!)
 
@@ -64,13 +64,13 @@ Add to your Claude Desktop MCP configuration:
 Simply ask Claude in natural language:
 
 ```
-Claude，请分析 @my_restaurant_report.xlsx
+Claude，请分析 @financial_report.xlsx
 ```
 
 or
 
 ```
-Analyze my restaurant's profitability @financial_report.xlsx
+Analyze my business profitability @financial_report.xlsx
 ```
 
 Claude will intelligently:
@@ -86,28 +86,50 @@ Claude will intelligently:
 fin-report-agent test
 ```
 
-## 🛠️ The 5 Simple Tools
+## 🛠️ The 15 Specialized Tools
 
+### 🎯 Simple Tools (5) - Data Extraction & Calculation
 1. **get_excel_info**: Get file structure (rows, columns, sheets)
 2. **show_excel_visual**: Display data in readable format
 3. **search_in_excel**: Find cells containing specific terms
 4. **read_excel_region**: Extract rectangular regions (raw data)
 5. **calculate**: Basic math operations (sum, average, max, min)
 
+### 🧭 Navigation Tools (3) - LSP-like Financial Navigation
+6. **find_account**: Search financial accounts by name pattern
+7. **get_financial_overview**: High-level financial structure overview
+8. **get_account_context**: Get account with parent/children context
+
+### 🤔 Thinking Tools (3) - Reflection & Validation
+9. **think_about_financial_data**: Assess data sufficiency for analysis
+10. **think_about_analysis_completeness**: Check analysis completeness
+11. **think_about_assumptions**: Validate assumptions against best practices
+
+### 💾 Memory Tools (3) - Session Management
+12. **save_analysis_insight**: Store insights for future reference
+13. **get_session_context**: View session history and progress
+14. **write_memory_note**: Document patterns and knowledge
+
+### 🔧 Validation Tools (1) - Structure Validation
+15. **validate_account_structure**: MANDATORY validation before calculations
+
 ## 📊 Real-World Success
 
-**Test Case**: 野百灵餐厅（绵阳店）5-8月财务报表
+**Test Case**: 野百灵餐厅（绵阳店）5-8月财务报表 (Restaurant Financial Report)
 
-**Challenge**: Original system reported ¥198,180.28 due to double-counting
-**Solution**: Claude intelligently recognized subtotal columns
-**Result**: Correct value ¥73,906.01 identified with transparent reasoning
+**Challenge**: Complex Excel with mixed Chinese/English, potential double-counting risks
+**Solution**:
+- Step 1: `validate_account_structure` → User confirmed 3-year depreciation
+- Step 2: Transparent data extraction using simple tools
+- Step 3: Progressive analysis with thinking tools
+- Step 4: Bilingual comprehensive report
 
-**Full Analysis Delivered**:
-- Revenue breakdown and trends
-- Cost analysis (food, labor, expenses)
-- KPI calculations and benchmarking
-- Risk alerts and recommendations
-- Bilingual output (Chinese/English)
+**Results Achieved**:
+- Total Revenue: ¥1,459,161 (accurate calculation)
+- Net Profit Margin: 18.3% (excellent vs industry 5-10%)
+- Cost Structure Analysis: Food 35.4%, Labor 24.5%, Rent 6.6%
+- Strategic Recommendations: Launch delivery service, optimize costs
+- Full audit trail of all assumptions and calculations
 
 ## 📁 Project Structure
 
@@ -117,9 +139,15 @@ fin_report_agent/
 ├── test_simple_tools_demo.py  # Demo of simple tools approach
 ├── src/
 │   └── mcp_server/
-│       ├── server.py          # MCP server implementation
-│       ├── simple_tools.py    # 5 simple tools
-│       └── config.py          # Server configuration
+│       ├── server.py          # Main MCP server (FinancialAnalysisMCPServer)
+│       ├── handler_router.py  # Routes tools to appropriate handlers
+│       ├── tool_registry.py   # All 15 tool definitions
+│       └── handlers/          # Organized tool handlers
+│           ├── simple_tools_handler.py     # 5 simple tools
+│           ├── navigation_handler.py       # 3 navigation tools
+│           ├── thinking_handler.py         # 3 thinking tools
+│           ├── memory_handler.py           # 3 memory tools
+│           └── complex_analysis_handler.py # 1 validation tool
 ├── tests/                     # Unit and integration tests
 ├── .mcp.json                  # MCP configuration for Claude Code
 ├── CLAUDE.md                  # Detailed project documentation
@@ -175,9 +203,10 @@ uv run ruff check src/ tests/
 
 ### Financial Insights
 - Revenue and cost breakdown
-- KPI calculations (food cost %, labor cost %, prime cost)
-- Trend analysis
-- Risk alerts and recommendations
+- KPI calculations (customizable by industry)
+- Multi-period trend analysis
+- Risk alerts and strategic recommendations
+- Industry benchmarking and performance scoring
 
 ## 🔐 Security
 
