@@ -2,9 +2,13 @@
 
 A production-ready financial reporting agent that processes Excel files and generates bilingual business analysis for any type of business using **transparent tools + Claude's intelligence**.
 
+**🆕 Now available in TWO deployment options:**
+- **🎯 Agent Skill** (NEW!): Lightweight, zero-installation, works everywhere
+- **🔧 MCP Server** (Existing): Full-featured with 15 tools, memory, validation workflows
+
 ## 🎯 Philosophy: Transparent Tools + Claude Intelligence
 
-This system uses **15 specialized tools** organized into 5 categories that work transparently with Claude for intelligent financial analysis. No black-box automation - every step is visible and explainable.
+This system uses intelligent financial analysis that works transparently with Claude. No black-box automation - every step is visible and explainable.
 
 ### Why This Approach?
 
@@ -12,11 +16,96 @@ This system uses **15 specialized tools** organized into 5 categories that work 
 - ✅ **Flexible**: Works with ANY Excel format
 - ✅ **Accurate**: Prevents double-counting errors (e.g., saved ¥124,274 in our test)
 - ✅ **Explainable**: Users can follow Claude's step-by-step reasoning
-- ✅ **Maintainable**: Clean, modular architecture with organized tool categories
+- ✅ **Maintainable**: Clean, modular architecture
 
-## 🚀 Quick Start (One Command!)
+## 🤔 Which Option Should I Use?
 
-### For Claude Code (Recommended)
+### Quick Decision Guide
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Need quick analysis on any Claude platform?            │
+│  → Use Agent Skill (zero installation!)                 │
+├─────────────────────────────────────────────────────────┤
+│  Need advanced features like memory, validation         │
+│  workflows, and multi-turn intelligence?                │
+│  → Use MCP Server (power user option)                   │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Detailed Comparison
+
+| Feature | Agent Skill 🎯 | MCP Server 🔧 |
+|---------|---------------|---------------|
+| **Installation** | None (just add skill) | Requires `uv` + Python |
+| **Platform Support** | All Claude platforms | Claude Code, Claude Desktop |
+| **Mobile Support** | ✅ Yes (Claude.ai app) | ❌ No |
+| **Setup Time** | < 1 minute | ~5 minutes |
+| **Tool Access** | Uses Claude's native tools | 15 specialized MCP tools |
+| **Memory System** | No persistent memory | ✅ Session memory + insights |
+| **Validation Workflows** | Basic | ✅ Advanced (account hierarchy) |
+| **Multi-turn Intelligence** | Yes | ✅ Enhanced (LSP-like navigation) |
+| **Context Usage** | Low (progressive disclosure) | Higher (all tools loaded) |
+| **Best For** | Quick analysis, beginners | Power users, complex workflows |
+
+### Typical User Journey
+
+```
+Day 1:  Start with Agent Skill (zero friction) ──────┐
+  ↓                                                    │
+Day 7:  Realize you need validation workflows         │
+  ↓                                                    │
+Day 14: Install MCP Server for advanced features ←────┘
+  ↓
+Day 30: Use BOTH (Skill for quick checks, MCP for deep analysis)
+```
+
+## 🚀 Quick Start
+
+### Option 1: Agent Skill (NEW! - Recommended for Most Users)
+
+**Installation**: Just add the skill to your Claude environment
+
+#### For Claude Code:
+```bash
+# Copy skill to your project
+cp -r .claude/skills/financial-analysis ~/.claude/skills/
+```
+
+#### For Claude.ai:
+1. Download the skill as ZIP: `.claude/skills/financial-analysis.zip`
+2. Go to Claude.ai → Settings → Skills → Upload Skill
+3. Upload the ZIP file
+
+#### For Claude API:
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+response = client.messages.create(
+    model="claude-sonnet-4-5-20250929",
+    max_tokens=4096,
+    skill_id="financial-analysis",  # Your uploaded skill ID
+    messages=[{
+        "role": "user",
+        "content": "Analyze my financial report @report.xlsx"
+    }]
+)
+```
+
+**That's it!** No Python, no dependencies, no MCP configuration needed.
+
+**Next Steps**: Simply ask Claude to analyze your financial Excel files:
+```
+Claude, please analyze @restaurant_financial_report.xlsx
+```
+
+---
+
+### Option 2: MCP Server (For Power Users)
+
+#### For Claude Code (Recommended)
 
 From your project directory:
 
@@ -86,7 +175,39 @@ Claude will intelligently:
 fin-report-agent test
 ```
 
-## 🛠️ The 15 Specialized Tools
+## 🛠️ Features Comparison
+
+### Agent Skill Features 🎯
+
+The Agent Skill provides comprehensive financial analysis capabilities using Claude's intelligence:
+
+**✨ Core Capabilities:**
+- **Excel Analysis**: Automatic structure recognition and data extraction
+- **Bilingual Support**: Full Chinese/English parallel analysis
+- **Industry Benchmarking**: Restaurant, retail, services, manufacturing, e-commerce, general business
+- **KPI Calculation**: Revenue, costs, margins, efficiency metrics
+- **Validation**: Double-counting prevention and assumption documentation
+- **Trend Analysis**: Multi-period comparison and growth tracking
+- **Strategic Insights**: Actionable recommendations based on data
+
+**📚 Knowledge Resources:**
+- 400+ Chinese-English financial term mappings
+- 6 industry benchmark databases (restaurant, retail, services, etc.)
+- Regional adjustments (China tier 1/2/3 cities)
+- Business lifecycle considerations (startup, growth, mature)
+
+**🎯 Best Use Cases:**
+- Quick ad-hoc financial analysis
+- Mobile analysis (Claude.ai app)
+- Beginner-friendly financial insights
+- Cross-platform consistency
+- Low context overhead requirements
+
+---
+
+### MCP Server Features 🔧
+
+The MCP Server provides **15 specialized tools** organized into 5 categories for power users:
 
 ### 🎯 Simple Tools (5) - Data Extraction & Calculation
 1. **get_excel_info**: Get file structure (rows, columns, sheets)
@@ -185,8 +306,17 @@ uv run ruff check src/ tests/
 
 ## 📚 Documentation
 
+### For Agent Skill Users:
+- **`.claude/skills/financial-analysis/SKILL.md`**: Complete skill instructions and methodology
+- **`.claude/skills/financial-analysis/EXAMPLES.md`**: Real-world usage examples and templates
+- **`.claude/skills/financial-analysis/templates/`**: Financial terms and industry benchmarks
+
+### For MCP Server Users:
 - **CLAUDE.md**: Comprehensive project guide for Claude Code
 - **Serena Memory**: `.serena/memory/simple_tools_breakthrough.md` - Documents the paradigm shift
+
+### General:
+- **README.md** (this file): Quick start and feature comparison
 
 ## 🎯 Key Features
 

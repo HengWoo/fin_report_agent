@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "last_updated": "2025-11-21",
+    "description": "Industry financial benchmarks for business performance analysis",
+    "disclaimer": "Benchmarks are general guidelines and may vary by region, business model, and market conditions. Always consider specific circumstances when evaluating performance.",
+    "sources": "Industry reports, financial databases, and historical analysis"
+  },
+
+  "restaurant": {
+    "industry_name": "Restaurant / Food & Beverage",
+    "industry_code": "restaurant",
+    "chinese_name": "餐饮业",
+
+    "revenue_composition": {
+      "food_revenue_pct": {"min": 60, "max": 75, "ideal": 65, "unit": "%", "description": "Food sales as % of total revenue"},
+      "beverage_revenue_pct": {"min": 25, "max": 40, "ideal": 35, "unit": "%", "description": "Beverage sales as % of total revenue"}
+    },
+
+    "cost_benchmarks": {
+      "food_cost_pct": {"min": 28, "max": 35, "ideal": 30, "unit": "%", "description": "Food cost as % of food revenue", "chinese": "食品成本率"},
+      "beverage_cost_pct": {"min": 20, "max": 30, "ideal": 25, "unit": "%", "description": "Beverage cost as % of beverage revenue", "chinese": "酒水成本率"},
+      "prime_cost_ratio": {"min": 55, "max": 65, "ideal": 60, "unit": "%", "description": "Food cost + Labor cost as % of revenue", "chinese": "综合成本率", "critical": true}
+    },
+
+    "labor_benchmarks": {
+      "labor_cost_pct": {"min": 25, "max": 35, "ideal": 30, "unit": "%", "description": "Total labor cost as % of revenue", "chinese": "人工成本率"}
+    },
+
+    "operating_expense_benchmarks": {
+      "rent_pct": {"min": 5, "max": 10, "ideal": 8, "unit": "%", "description": "Rent as % of revenue", "chinese": "租金占比"},
+      "utilities_pct": {"min": 3, "max": 5, "ideal": 4, "unit": "%", "description": "Utilities (water, electricity, gas) as % of revenue", "chinese": "水电费占比"},
+      "marketing_pct": {"min": 2, "max": 5, "ideal": 3, "unit": "%", "description": "Marketing expense as % of revenue", "chinese": "营销费用占比"},
+      "total_opex_pct": {"min": 15, "max": 25, "ideal": 20, "unit": "%", "description": "Total operating expenses as % of revenue", "chinese": "营业费用率"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 60, "max": 70, "ideal": 65, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率"},
+      "operating_margin": {"min": 10, "max": 20, "ideal": 15, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "efficiency_metrics": {
+      "revenue_per_seat": {"unit": "¥/seat/day", "description": "Daily revenue per seat", "varies_by_location": true},
+      "table_turnover": {"min": 2, "max": 5, "ideal": 3, "unit": "times/day", "description": "Average table turnover per day"},
+      "inventory_turnover": {"min": 15, "max": 30, "ideal": 20, "unit": "times/year", "description": "Food inventory turnover"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 12, "prime_cost_max": 58, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 8, "prime_cost_max": 62, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 5, "prime_cost_max": 65, "description": "Average performance"},
+      "poor": {"net_margin_max": 5, "prime_cost_min": 65, "description": "Below-average performance"}
+    }
+  },
+
+  "retail": {
+    "industry_name": "Retail",
+    "industry_code": "retail",
+    "chinese_name": "零售业",
+
+    "cost_benchmarks": {
+      "cogs_pct": {"min": 50, "max": 75, "ideal": 60, "unit": "%", "description": "Cost of goods sold as % of revenue", "chinese": "销售成本率", "note": "Varies significantly by product category"}
+    },
+
+    "labor_benchmarks": {
+      "labor_cost_pct": {"min": 10, "max": 20, "ideal": 15, "unit": "%", "description": "Labor cost as % of revenue", "chinese": "人工成本率"}
+    },
+
+    "operating_expense_benchmarks": {
+      "rent_pct": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Rent as % of revenue", "chinese": "租金占比"},
+      "marketing_pct": {"min": 3, "max": 8, "ideal": 5, "unit": "%", "description": "Marketing expense as % of revenue", "chinese": "营销费用占比"},
+      "total_opex_pct": {"min": 20, "max": 30, "ideal": 25, "unit": "%", "description": "Total operating expenses as % of revenue", "chinese": "营业费用率"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 25, "max": 50, "ideal": 35, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率", "note": "Higher for specialty retail, lower for discount"},
+      "operating_margin": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 2, "max": 8, "ideal": 5, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "efficiency_metrics": {
+      "inventory_turnover": {"min": 5, "max": 15, "ideal": 10, "unit": "times/year", "description": "Inventory turnover ratio", "chinese": "存货周转率"},
+      "revenue_per_sqft": {"unit": "¥/sqft/year", "description": "Annual revenue per square foot", "varies_by_location": true},
+      "days_inventory_outstanding": {"min": 30, "max": 60, "ideal": 45, "unit": "days", "description": "Average days to sell inventory"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 6, "gross_margin_min": 40, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 4, "gross_margin_min": 30, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 2, "gross_margin_min": 25, "description": "Average performance"},
+      "poor": {"net_margin_max": 2, "gross_margin_max": 25, "description": "Below-average performance"}
+    }
+  },
+
+  "services": {
+    "industry_name": "Professional Services",
+    "industry_code": "services",
+    "chinese_name": "服务业",
+
+    "cost_benchmarks": {
+      "service_delivery_cost_pct": {"min": 20, "max": 40, "ideal": 30, "unit": "%", "description": "Direct service delivery cost as % of revenue", "chinese": "服务成本率"}
+    },
+
+    "labor_benchmarks": {
+      "labor_cost_pct": {"min": 40, "max": 60, "ideal": 50, "unit": "%", "description": "Labor cost as % of revenue (highest among industries)", "chinese": "人工成本率", "note": "Services are labor-intensive"}
+    },
+
+    "operating_expense_benchmarks": {
+      "rent_pct": {"min": 5, "max": 10, "ideal": 7, "unit": "%", "description": "Rent as % of revenue", "chinese": "租金占比"},
+      "marketing_pct": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Marketing expense as % of revenue", "chinese": "营销费用占比"},
+      "technology_pct": {"min": 3, "max": 10, "ideal": 5, "unit": "%", "description": "Technology and software costs as % of revenue", "chinese": "技术费用占比"},
+      "total_opex_pct": {"min": 15, "max": 25, "ideal": 20, "unit": "%", "description": "Total operating expenses as % of revenue", "chinese": "营业费用率"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 50, "max": 80, "ideal": 65, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率", "note": "High margins due to low COGS"},
+      "operating_margin": {"min": 10, "max": 25, "ideal": 18, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 8, "max": 20, "ideal": 15, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "efficiency_metrics": {
+      "revenue_per_employee": {"unit": "¥/employee/year", "description": "Annual revenue per employee", "varies_by_service_type": true},
+      "utilization_rate": {"min": 60, "max": 85, "ideal": 75, "unit": "%", "description": "Billable hours as % of total hours"},
+      "client_acquisition_cost": {"unit": "¥/client", "description": "Average cost to acquire new client"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 15, "utilization_rate_min": 80, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 12, "utilization_rate_min": 70, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 8, "utilization_rate_min": 60, "description": "Average performance"},
+      "poor": {"net_margin_max": 8, "utilization_rate_max": 60, "description": "Below-average performance"}
+    }
+  },
+
+  "manufacturing": {
+    "industry_name": "Manufacturing",
+    "industry_code": "manufacturing",
+    "chinese_name": "制造业",
+
+    "cost_benchmarks": {
+      "raw_material_pct": {"min": 40, "max": 60, "ideal": 50, "unit": "%", "description": "Raw material cost as % of revenue", "chinese": "原材料成本率"},
+      "direct_labor_pct": {"min": 10, "max": 20, "ideal": 15, "unit": "%", "description": "Direct labor cost as % of revenue", "chinese": "直接人工成本率"},
+      "manufacturing_overhead_pct": {"min": 15, "max": 25, "ideal": 20, "unit": "%", "description": "Manufacturing overhead as % of revenue", "chinese": "制造费用率"}
+    },
+
+    "operating_expense_benchmarks": {
+      "admin_expense_pct": {"min": 5, "max": 10, "ideal": 7, "unit": "%", "description": "Administrative expense as % of revenue", "chinese": "管理费用率"},
+      "selling_expense_pct": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Selling expense as % of revenue", "chinese": "销售费用率"},
+      "rd_expense_pct": {"min": 3, "max": 10, "ideal": 5, "unit": "%", "description": "R&D expense as % of revenue", "chinese": "研发费用率", "note": "Higher for high-tech manufacturing"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 20, "max": 40, "ideal": 30, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率"},
+      "operating_margin": {"min": 8, "max": 18, "ideal": 12, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "efficiency_metrics": {
+      "inventory_turnover": {"min": 4, "max": 12, "ideal": 8, "unit": "times/year", "description": "Inventory turnover ratio", "chinese": "存货周转率"},
+      "asset_turnover": {"min": 1.5, "max": 3, "ideal": 2, "unit": "times/year", "description": "Total asset turnover"},
+      "capacity_utilization": {"min": 70, "max": 95, "ideal": 85, "unit": "%", "description": "Production capacity utilization rate"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 12, "gross_margin_min": 35, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 8, "gross_margin_min": 25, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 5, "gross_margin_min": 20, "description": "Average performance"},
+      "poor": {"net_margin_max": 5, "gross_margin_max": 20, "description": "Below-average performance"}
+    }
+  },
+
+  "ecommerce": {
+    "industry_name": "E-commerce",
+    "industry_code": "ecommerce",
+    "chinese_name": "电商",
+
+    "cost_benchmarks": {
+      "cogs_pct": {"min": 50, "max": 70, "ideal": 60, "unit": "%", "description": "Cost of goods sold as % of revenue", "chinese": "销售成本率"}
+    },
+
+    "operating_expense_benchmarks": {
+      "fulfillment_pct": {"min": 8, "max": 15, "ideal": 12, "unit": "%", "description": "Fulfillment and logistics as % of revenue", "chinese": "物流费用占比"},
+      "platform_fees_pct": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Platform/marketplace fees as % of revenue", "chinese": "平台费用占比"},
+      "digital_marketing_pct": {"min": 10, "max": 25, "ideal": 15, "unit": "%", "description": "Digital marketing as % of revenue", "chinese": "营销费用占比"},
+      "technology_pct": {"min": 5, "max": 10, "ideal": 7, "unit": "%", "description": "Technology and hosting costs as % of revenue", "chinese": "技术费用占比"},
+      "customer_service_pct": {"min": 3, "max": 8, "ideal": 5, "unit": "%", "description": "Customer service as % of revenue", "chinese": "客服费用占比"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 30, "max": 50, "ideal": 40, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率"},
+      "operating_margin": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 3, "max": 10, "ideal": 6, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "efficiency_metrics": {
+      "conversion_rate": {"min": 1, "max": 5, "ideal": 3, "unit": "%", "description": "Website conversion rate"},
+      "cart_abandonment_rate": {"min": 60, "max": 80, "ideal": 70, "unit": "%", "description": "Shopping cart abandonment rate (lower is better)", "inverse": true},
+      "customer_lifetime_value": {"unit": "¥/customer", "description": "Average customer lifetime value"},
+      "customer_acquisition_cost": {"unit": "¥/customer", "description": "Average customer acquisition cost"},
+      "inventory_turnover": {"min": 8, "max": 20, "ideal": 12, "unit": "times/year", "description": "Inventory turnover ratio"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 8, "conversion_rate_min": 4, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 5, "conversion_rate_min": 2.5, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 3, "conversion_rate_min": 1.5, "description": "Average performance"},
+      "poor": {"net_margin_max": 3, "conversion_rate_max": 1.5, "description": "Below-average performance"}
+    }
+  },
+
+  "general_business": {
+    "industry_name": "General Business (Default)",
+    "industry_code": "general",
+    "chinese_name": "通用业务",
+    "note": "Use when specific industry is unknown. Provides conservative baseline benchmarks.",
+
+    "cost_benchmarks": {
+      "cogs_pct": {"min": 40, "max": 70, "ideal": 55, "unit": "%", "description": "Cost of goods/services sold as % of revenue", "chinese": "成本率"}
+    },
+
+    "labor_benchmarks": {
+      "labor_cost_pct": {"min": 20, "max": 40, "ideal": 30, "unit": "%", "description": "Labor cost as % of revenue", "chinese": "人工成本率"}
+    },
+
+    "operating_expense_benchmarks": {
+      "total_opex_pct": {"min": 20, "max": 35, "ideal": 25, "unit": "%", "description": "Total operating expenses as % of revenue", "chinese": "营业费用率"}
+    },
+
+    "profitability_benchmarks": {
+      "gross_margin": {"min": 30, "max": 60, "ideal": 45, "unit": "%", "description": "Gross profit margin", "chinese": "毛利率"},
+      "operating_margin": {"min": 5, "max": 20, "ideal": 12, "unit": "%", "description": "Operating profit margin", "chinese": "营业利润率"},
+      "net_margin": {"min": 5, "max": 15, "ideal": 10, "unit": "%", "description": "Net profit margin", "chinese": "净利润率"}
+    },
+
+    "scoring_criteria": {
+      "excellent": {"net_margin_min": 12, "description": "Outstanding performance"},
+      "good": {"net_margin_min": 8, "description": "Above-average performance"},
+      "fair": {"net_margin_min": 5, "description": "Average performance"},
+      "poor": {"net_margin_max": 5, "description": "Below-average performance"}
+    }
+  },
+
+  "regional_adjustments": {
+    "china_tier1": {
+      "description": "Tier 1 cities (Beijing, Shanghai, Shenzhen, Guangzhou)",
+      "chinese": "一线城市",
+      "rent_multiplier": 1.5,
+      "labor_multiplier": 1.3,
+      "note": "Higher costs in major cities"
+    },
+    "china_tier2": {
+      "description": "Tier 2 cities (Chengdu, Hangzhou, Xi'an, etc.)",
+      "chinese": "二线城市",
+      "rent_multiplier": 1.0,
+      "labor_multiplier": 1.0,
+      "note": "Baseline benchmarks apply"
+    },
+    "china_tier3": {
+      "description": "Tier 3 and lower cities",
+      "chinese": "三线及以下城市",
+      "rent_multiplier": 0.7,
+      "labor_multiplier": 0.8,
+      "note": "Lower costs in smaller cities"
+    }
+  },
+
+  "business_lifecycle_adjustments": {
+    "startup": {
+      "description": "Startup phase (0-2 years)",
+      "chinese": "初创期",
+      "expected_net_margin": "Often negative to low single digits",
+      "focus": "Revenue growth and customer acquisition",
+      "typical_challenges": "High customer acquisition cost, low economies of scale"
+    },
+    "growth": {
+      "description": "Growth phase (2-5 years)",
+      "chinese": "成长期",
+      "expected_net_margin": "5-10%",
+      "focus": "Scaling operations and improving efficiency",
+      "typical_challenges": "Balancing growth investment with profitability"
+    },
+    "mature": {
+      "description": "Mature phase (5+ years)",
+      "chinese": "成熟期",
+      "expected_net_margin": "10-15%+",
+      "focus": "Optimization and market share defense",
+      "typical_challenges": "Maintaining margins amid competition"
+    }
+  },
+
+  "interpretation_guidelines": {
+    "margin_interpretation": {
+      "high_margin_industries": ["Software/SaaS", "Professional Services", "Consulting"],
+      "medium_margin_industries": ["Manufacturing", "Restaurant", "Retail"],
+      "low_margin_industries": ["Grocery", "Wholesale", "Commodities"],
+      "note": "Always compare within the same industry category"
+    },
+    "trend_importance": {
+      "description": "Trends often matter more than absolute values",
+      "positive_signs": ["Improving margins over time", "Revenue growing faster than costs", "Increasing efficiency metrics"],
+      "warning_signs": ["Declining margins", "Costs growing faster than revenue", "Decreasing efficiency metrics"]
+    },
+    "context_matters": {
+      "factors": ["Business age", "Growth stage", "Geographic location", "Market conditions", "Seasonality", "Business model (premium vs. discount)"],
+      "recommendation": "Always ask user for context before making definitive judgments"
+    }
+  }
+}
